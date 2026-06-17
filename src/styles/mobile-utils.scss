@@ -1,0 +1,156 @@
+/**
+ * Mobile-First Utilities
+ * Performance & UX improvements for mobile devices
+ */
+
+/* Prevenir zoom en inputs */
+input,
+select,
+textarea,
+button {
+  font-size: 16px;
+}
+
+/* Mejor manejo de scrolling en mobile */
+body,
+html {
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-top: 80px;
+  @media (max-width: 640px) {
+    scroll-padding-top: 60px;
+  }
+}
+
+/* Touch targets mínimo 44x44px */
+button,
+a[role='button'],
+input[type='button'],
+input[type='submit'],
+input[type='radio'],
+input[type='checkbox'] {
+  min-height: 44px;
+  min-width: 44px;
+  @media (max-width: 768px) {
+    padding: calc(max(1rem, (44px - 1em) / 2)) 1rem;
+  }
+}
+
+/* Mejorar legibilidad de texto pequeño */
+@media (max-width: 480px) {
+  body {
+    line-height: 1.6;
+  }
+
+  p {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    word-break: break-word;
+  }
+}
+
+/* Optimizar imágenes responsivas */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Mejorar performance de animaciones en mobile */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Reducir movimiento en conexiones lentas */
+@media (prefers-reduced-data: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    background-attachment: scroll !important;
+  }
+}
+
+/* Mejorar contraste en luz brillante */
+@media (prefers-contrast: more) {
+  body {
+    color: #000;
+    background: #fff;
+  }
+}
+
+/* Modo oscuro mejorado */
+@media (prefers-color-scheme: dark) {
+  body {
+    color-scheme: dark;
+  }
+}
+
+/* Viewport metas - CSS approach */
+@supports (viewport-fit: cover) {
+  body {
+    /* Para notches de iPhone */
+    padding: max(0px, env(safe-area-inset-top))
+             max(0px, env(safe-area-inset-right))
+             max(0px, env(safe-area-inset-bottom))
+             max(0px, env(safe-area-inset-left));
+  }
+}
+
+/* Prevent layout shift - scrollbar width */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Touch-friendly hover states */
+@media (hover: none) and (pointer: coarse) {
+  /* Dispositivos táctiles - no usar :hover */
+  *:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  button,
+  a {
+    padding: 0.75rem;
+  }
+}
+
+/* Keyboard focus visible */
+*:focus-visible {
+  outline: 2px solid #e11d48;
+  outline-offset: 2px;
+}
+
+/* Mejorar UX de inputs */
+input:focus,
+textarea:focus,
+select:focus {
+  background-color: #18181b;
+  border-color: #e11d48;
+}
+
+/* Prevenir comportamientos por defecto de mobile */
+a,
+button {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Scroll suave en viewport */
+@supports (scroll-behavior: smooth) {
+  html {
+    scroll-behavior: smooth;
+  }
+}

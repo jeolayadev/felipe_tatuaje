@@ -6,9 +6,18 @@ interface SafeImageProps {
   alt: string;
   className?: string;
   loading?: 'eager' | 'lazy';
+  srcSet?: string;
+  sizes?: string;
 }
 
-export const SafeImage = ({ src, alt, className = '', loading = 'lazy' }: SafeImageProps) => {
+export const SafeImage = ({ 
+  src, 
+  alt, 
+  className = '', 
+  loading = 'lazy',
+  srcSet,
+  sizes,
+}: SafeImageProps) => {
   const [error, setError] = useState(false);
 
   if (error) {
@@ -27,6 +36,8 @@ export const SafeImage = ({ src, alt, className = '', loading = 'lazy' }: SafeIm
       loading={loading}
       decoding="async"
       referrerPolicy="no-referrer"
+      srcSet={srcSet}
+      sizes={sizes}
       onError={() => setError(true)}
     />
   );

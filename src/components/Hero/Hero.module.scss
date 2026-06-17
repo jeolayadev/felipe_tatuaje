@@ -1,11 +1,20 @@
 .hero {
   position: relative;
   min-height: 100dvh;
-  padding: 5.5rem 1.25rem 2.5rem;
+  padding: 5.5rem 1rem 2.5rem;
   display: flex;
   align-items: center;
   background: transparent;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 5.5rem 1rem 2rem;
+    min-height: 90dvh;
+  }
+
+  @media (max-width: 480px) {
+    padding: 5.5rem 0.75rem 1.5rem;
+  }
 }
 
 .inner {
@@ -23,10 +32,28 @@
     grid-template-columns: 1fr;
     gap: 2rem;
   }
+
+  @media (max-width: 640px) {
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    gap: 1rem;
+  }
 }
 
 .copy {
   max-width: 520px;
+  padding: 0 1rem;
+
+  @media (max-width: 900px) {
+    padding: 0;
+  }
+
+  @media (max-width: 480px) {
+    max-width: 100%;
+    padding: 0;
+  }
 }
 
 .eyebrow {
@@ -36,16 +63,25 @@
   color: #e11d48;
   margin-bottom: 0.75rem;
   font-weight: 600;
+
+  @media (max-width: 480px) {
+    font-size: 0.65rem;
+    margin-bottom: 0.5rem;
+  }
 }
 
 .title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(4rem, 12vw, 7rem);
+  font-size: clamp(2.5rem, 10vw, 7rem);
   line-height: 0.95;
   letter-spacing: 0.02em;
   display: flex;
   flex-wrap: wrap;
   margin: 0;
+
+  @media (max-width: 480px) {
+    font-size: clamp(2rem, 9vw, 3.5rem);
+  }
 }
 
 .titleMain {
@@ -63,6 +99,15 @@
   color: #f4f4f5;
   font-weight: 500;
   max-width: 36ch;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.95rem;
+    margin-top: 0.75rem;
+  }
 }
 
 .taglineSub {
@@ -71,6 +116,10 @@
   color: #71717a;
   font-style: italic;
   max-width: 38ch;
+
+  @media (max-width: 480px) {
+    font-size: 0.85rem;
+  }
 }
 
 .estilos {

@@ -4,6 +4,14 @@
   background: transparent;
   border-top: 1px solid #27272a;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 2.5rem 1rem 3rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 2rem 0.75rem 2.5rem;
+  }
 }
 
 .wrap {
@@ -11,6 +19,10 @@
   z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
+
+  @media (max-width: 480px) {
+    padding: 0 0.25rem;
+  }
 }
 
 .header {
@@ -22,12 +34,20 @@
     letter-spacing: 0.04em;
     color: #f4f4f5;
     line-height: 1;
+
+    @media (max-width: 480px) {
+      font-size: clamp(1.8rem, 5vw, 2.5rem);
+    }
   }
 
   p {
     margin-top: 0.35rem;
     color: #71717a;
     font-size: 0.9rem;
+
+    @media (max-width: 480px) {
+      font-size: 0.8rem;
+    }
   }
 }
 
@@ -45,15 +65,29 @@
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    padding: 0.45rem 0.85rem;
+    padding: 0.6rem 0.85rem;
     border-radius: 3px;
     overflow: hidden;
     transition: color 0.25s, border-color 0.25s;
+    cursor: pointer;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+
+    @media (max-width: 480px) {
+      font-size: 0.65rem;
+      padding: 0.55rem 0.7rem;
+      min-height: 40px;
+    }
 
     &:hover {
       color: #f4f4f5;
       border-color: #3f3f46;
       transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
 
     &.activo {
@@ -79,10 +113,17 @@
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
   }
 
-  @media (max-width: 400px) {
+  @media (max-width: 480px) {
     grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  @media (max-width: 360px) {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
 }
 
@@ -95,11 +136,27 @@
   aspect-ratio: 3/4;
   transition: box-shadow 0.35s ease, border-color 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+
+  @media (max-width: 480px) {
+    border-radius: 6px;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
 
   &:hover {
-    border-color: rgba(225, 29, 72, 0.5);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 24px rgba(225, 29, 72, 0.12);
-    transform: translateY(-8px);
+    @media (min-width: 769px) {
+      border-color: rgba(225, 29, 72, 0.5);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 24px rgba(225, 29, 72, 0.12);
+      transform: translateY(-8px);
+    }
+  }
+
+  &:active {
+    @media (max-width: 768px) {
+      transform: scale(0.98);
+      border-color: #e11d48;
+    }
   }
 }
 
@@ -177,6 +234,7 @@
   justify-content: center;
   z-index: 1000;
   backdrop-filter: blur(4px);
+  padding: 0.5rem;
 }
 
 .lightboxContent {
@@ -187,6 +245,12 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(225, 29, 72, 0.2);
+
+  @media (max-width: 480px) {
+    width: 95%;
+    max-height: 85vh;
+    border-radius: 8px;
+  }
 
   img {
     width: 100%;

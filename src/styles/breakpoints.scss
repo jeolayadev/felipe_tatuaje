@@ -1,0 +1,140 @@
+/**
+ * Responsive Breakpoints & Mixins
+ * Mobile-first approach for better performance
+ */
+
+// Breakpoints (mobile-first)
+$breakpoint-xs: 320px;   // Extra small (phones)
+$breakpoint-sm: 480px;   // Small (landscape phones)
+$breakpoint-md: 768px;   // Medium (tablets)
+$breakpoint-lg: 1024px;  // Large (desktops)
+$breakpoint-xl: 1280px;  // Extra large (wide screens)
+$breakpoint-2xl: 1536px; // 2x large
+
+// Media query mixins
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == 'xs' {
+    @media (min-width: $breakpoint-xs) { @content; }
+  } @else if $breakpoint == 'sm' {
+    @media (min-width: $breakpoint-sm) { @content; }
+  } @else if $breakpoint == 'md' {
+    @media (min-width: $breakpoint-md) { @content; }
+  } @else if $breakpoint == 'lg' {
+    @media (min-width: $breakpoint-lg) { @content; }
+  } @else if $breakpoint == 'xl' {
+    @media (min-width: $breakpoint-xl) { @content; }
+  } @else if $breakpoint == '2xl' {
+    @media (min-width: $breakpoint-2xl) { @content; }
+  } @else if $breakpoint == 'max-sm' {
+    @media (max-width: calc($breakpoint-sm - 1px)) { @content; }
+  } @else if $breakpoint == 'max-md' {
+    @media (max-width: calc($breakpoint-md - 1px)) { @content; }
+  } @else if $breakpoint == 'max-lg' {
+    @media (max-width: calc($breakpoint-lg - 1px)) { @content; }
+  } @else {
+    @media (min-width: $breakpoint) { @content; }
+  }
+}
+
+// Touch-friendly sizing
+$touch-target-min: 44px;  // Minimum touch target size
+
+// Responsive font sizing mixin
+@mixin fluid-font($min-size, $max-size, $min-width: $breakpoint-xs, $max-width: $breakpoint-2xl) {
+  font-size: $min-size;
+  @media (min-width: $min-width) {
+    font-size: clamp($min-size, calc(#{$min-size} + (#{$max-size} - #{$min-size}) * ((100vw - #{$min-width}) / (#{$max-width} - #{$min-width}))), $max-size);
+  }
+}
+
+// Responsive spacing mixin
+@mixin responsive-padding($mobile, $tablet: null, $desktop: null) {
+  padding: $mobile;
+  @if $tablet {
+    @include respond-to('md') { padding: $tablet; }
+  }
+  @if $desktop {
+    @include respond-to('lg') { padding: $desktop; }
+  }
+}
+
+@mixin responsive-margin($mobile, $tablet: null, $desktop: null) {
+  margin: $mobile;
+  @if $tablet {
+    @include respond-to('md') { margin: $tablet; }
+  }
+  @if $desktop {
+    @include respond-to('lg') { margin: $desktop; }
+  }
+}
+
+// Container queries helper
+@mixin container-lg {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  @include respond-to('md') {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+// Hide elements responsively
+@mixin hide-on($breakpoint) {
+  @if $breakpoint == 'mobile' {
+    @include respond-to('max-sm') { display: none; }
+  } @else if $breakpoint == 'tablet' {
+    @include respond-to('max-md') { display: none; }
+  } @else if $breakpoint == 'desktop' {
+    @include respond-to('lg') { display: none; }
+  }
+}
+
+// Show only on specific breakpoint
+@mixin show-on($breakpoint) {
+  display: none;
+  @if $breakpoint == 'mobile' {
+    @include respond-to('max-md') { display: block; }
+  } @else if $breakpoint == 'tablet' {
+    @include respond-to('md') {
+      @include respond-to('max-lg') { display: block; }
+    }
+  } @else if $breakpoint == 'desktop' {
+    @include respond-to('lg') { display: block; }
+  }
+}
+
+// Grid responsive mixin
+@mixin responsive-grid($mobile-cols, $tablet-cols: null, $desktop-cols: null, $gap: 1rem) {
+  display: grid;
+  grid-template-columns: repeat($mobile-cols, 1fr);
+  gap: $gap;
+
+  @if $tablet-cols {
+    @include respond-to('md') {
+      grid-template-columns: repeat($tablet-cols, 1fr);
+    }
+  }
+
+  @if $desktop-cols {
+    @include respond-to('lg') {
+      grid-template-columns: repeat($desktop-cols, 1fr);
+    }
+  }
+}
+
+// Flexbox responsive
+@mixin responsive-flex($mobile-direction: column, $desktop-direction: null, $gap: 1rem) {
+  display: flex;
+  flex-direction: $mobile-direction;
+  gap: $gap;
+
+  @if $desktop-direction {
+    @include respond-to('md') {
+      flex-direction: $desktop-direction;
+    }
+  }
+}
