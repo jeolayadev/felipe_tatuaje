@@ -15,7 +15,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Dragón irezumi',
     categoria: 'Dragón',
     estilo: 'Japonés' as const,
-    src: unsplash('1578482326433-ad1aabb9c928'),
+    src: '/gallery/1.jpg',
     alt: 'Tatuaje japonés de dragón en el brazo',
   },
   {
@@ -23,7 +23,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Espalda japonesa',
     categoria: 'Espalda',
     estilo: 'Japonés' as const,
-    src: unsplash('1611501437281-430bfbe1220a'),
+    src: '/gallery/2.jpg',
     alt: 'Gran tatuaje japonés en la espalda',
   },
   {
@@ -31,7 +31,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Sesión en brazo',
     categoria: 'Irezumi',
     estilo: 'Japonés' as const,
-    src: unsplash('1597318911596-6fefab434df5'),
+    src: '/gallery/3.jpg',
     alt: 'Tatuaje irezumi japonés en el brazo',
   },
   {
@@ -39,7 +39,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Tatuaje en pierna',
     categoria: 'Manga',
     estilo: 'Japonés' as const,
-    src: unsplash('1721160223584-b3a19f2e0e6a'),
+    src: '/gallery/4.svg',
     alt: 'Tatuaje manga en la pierna',
   },
   {
@@ -47,7 +47,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Trabajo en estudio',
     categoria: 'Irezumi',
     estilo: 'Japonés' as const,
-    src: unsplash('1704345910291-49168c7631b6'),
+    src: '/gallery/5.svg',
     alt: 'Tatuador trabajando en el estudio',
   },
   {
@@ -55,7 +55,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Proceso de tatuaje',
     categoria: 'Koi',
     estilo: 'Japonés' as const,
-    src: unsplash('1562962230-16e4623d36e6'),
+    src: '/gallery/6.svg',
     alt: 'Cliente recibiendo tatuaje koi en el estudio',
   },
   {
