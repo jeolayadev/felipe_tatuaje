@@ -6,7 +6,7 @@
 const unsplash = (id: string, w = 1200, h = 1500) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&h=${h}&q=90`;
 
-export const BG_WALLPAPER = '/bg-wallpaper.jpg';
+export const BG_WALLPAPER = './bg-wallpaper.jpg';
 
 /** Trabajos japoneses — cada URL es sesión o pieza de tatuaje real */
 export const JAPANESE_WORKS_HD = [
