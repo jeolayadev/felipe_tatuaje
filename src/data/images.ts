@@ -8,6 +8,8 @@ const unsplash = (id: string, w = 1200, h = 1500) =>
 
 export const BG_WALLPAPER = './bg-wallpaper.jpg';
 
+const BASE = (import.meta.env && import.meta.env.BASE_URL) ? import.meta.env.BASE_URL : '/felipe_tatuaje/';
+
 /** Trabajos japoneses — cada URL es sesión o pieza de tatuaje real */
 export const JAPANESE_WORKS_HD = [
   {
@@ -15,7 +17,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Dragón irezumi',
     categoria: 'Dragón',
     estilo: 'Japonés' as const,
-    src: '/gallery/1.jpg',
+    src: `${BASE}gallery/1.jpg`,
     alt: 'Tatuaje japonés de dragón en el brazo',
   },
   {
@@ -23,7 +25,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Espalda japonesa',
     categoria: 'Espalda',
     estilo: 'Japonés' as const,
-    src: '/gallery/2.jpg',
+    src: `${BASE}gallery/2.jpg`,
     alt: 'Gran tatuaje japonés en la espalda',
   },
   {
@@ -31,7 +33,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Sesión en brazo',
     categoria: 'Irezumi',
     estilo: 'Japonés' as const,
-    src: '/gallery/3.jpg',
+    src: `${BASE}gallery/3.jpg`,
     alt: 'Tatuaje irezumi japonés en el brazo',
   },
   {
@@ -39,7 +41,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Tatuaje en pierna',
     categoria: 'Manga',
     estilo: 'Japonés' as const,
-    src: '/gallery/4.svg',
+    src: `${BASE}gallery/4.svg`,
     alt: 'Tatuaje manga en la pierna',
   },
   {
@@ -47,7 +49,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Trabajo en estudio',
     categoria: 'Irezumi',
     estilo: 'Japonés' as const,
-    src: '/gallery/5.svg',
+    src: `${BASE}gallery/5.svg`,
     alt: 'Tatuador trabajando en el estudio',
   },
   {
@@ -55,7 +57,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Proceso de tatuaje',
     categoria: 'Koi',
     estilo: 'Japonés' as const,
-    src: '/gallery/6.svg',
+    src: `${BASE}gallery/6.svg`,
     alt: 'Cliente recibiendo tatuaje koi en el estudio',
   },
   {
