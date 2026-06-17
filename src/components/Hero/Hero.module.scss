@@ -291,3 +291,87 @@
   color: #fff;
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
 }
+  @media (max-width: 640px) {
+    .hero {
+      padding: 3.5rem 1rem 2rem;
+    }
+
+    .inner {
+      gap: 1.5rem;
+    }
+
+    .copy {
+      max-width: 100%;
+    }
+
+    .tagline,
+    .taglineSub {
+      max-width: 100%;
+    }
+
+    .estilos {
+      gap: 0.35rem;
+    }
+
+    .estilos li {
+      font-size: 0.65rem;
+      padding: 0.3rem 0.55rem;
+    }
+
+    .actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .actions button {
+      width: 100%;
+    }
+
+    .visual {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    .carousel {
+      aspect-ratio: 3 / 4;
+    }
+
+    .slideLabel {
+      top: 0.5rem;
+      left: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.6rem;
+    }
+
+    .thumbs {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.4rem;
+    }
+
+    .thumb {
+      aspect-ratio: 4 / 3;
+    }
+
+    .thumbTag {
+      font-size: 0.6rem;
+      padding: 0.25rem;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .hero {
+      padding: 2.5rem 0.75rem 1.5rem;
+    }
+
+    .title {
+      font-size: clamp(3rem, 14vw, 5.5rem);
+    }
+
+    .actions {
+      gap: 0.5rem;
+    }
+
+    .thumbs {
+      grid-template-columns: 1fr;
+    }
+  }
