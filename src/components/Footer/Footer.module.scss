@@ -1,0 +1,53 @@
+.footer {
+  padding: 1.25rem;
+  border-top: 1px solid #27272a;
+  background: #0c0c0c;
+}
+
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.25rem;
+  letter-spacing: 0.08em;
+  color: #e11d48;
+}
+
+nav {
+  display: flex;
+  gap: 1.25rem;
+
+  a {
+    font-size: 0.8rem;
+    color: #71717a;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #f4f4f5;
+    }
+  }
+}
+
+.copy {
+  font-size: 0.75rem;
+  color: #52525b;
+  width: 100%;
+  text-align: center;
+  margin-top: 0.5rem;
+
+  @media (min-width: 640px) {
+    width: auto;
+    margin-top: 0;
+    text-align: right;
+  }
+}

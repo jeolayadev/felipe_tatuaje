@@ -1,0 +1,76 @@
+.testimonios {
+  position: relative;
+  padding: 7rem 2rem;
+  background: #030303;
+  color: #F5F2EB;
+  overflow: hidden;
+}
+
+.ambientGlow {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(212, 175, 55, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.sectionNumber {
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(4rem, 12vw, 8rem);
+  color: #D4AF37;
+  opacity: 0.04;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.divider {
+  width: 100%;
+  max-width: 400px;
+  margin: 2rem auto;
+  color: #D4AF37;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 4rem;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+
+  h2 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    margin-top: 1rem;
+    background: linear-gradient(135deg, #F5F2EB 0%, #D4AF37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+.label {
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  display: block;
+  opacity: 0.85;
+}
+
+.subtitle {
+  font-size: 1.15rem;
+  font-style: italic;
+  color: rgba(245, 242, 235, 0.55);
+  margin-top: 0.75rem;
+}
+
+.carouselWrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}

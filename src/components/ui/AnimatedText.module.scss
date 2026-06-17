@@ -1,0 +1,88 @@
+.split {
+  display: inline-flex;
+  flex-wrap: wrap;
+  perspective: 600px;
+}
+
+.char {
+  display: inline-block;
+  transform-style: preserve-3d;
+}
+
+.revealLine {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.revealAccent {
+  display: inline-block;
+  width: 28px;
+  height: 2px;
+  background: #e11d48;
+  transform-origin: left;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  margin-bottom: 1.5rem;
+
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    letter-spacing: 0.06em;
+    line-height: 1;
+    color: #f4f4f5;
+  }
+
+  p {
+    margin-top: 0.4rem;
+    color: #71717a;
+    font-size: 0.9rem;
+  }
+}
+
+.titleShimmer {
+  background: linear-gradient(
+    110deg,
+    #f4f4f5 0%,
+    #f4f4f5 40%,
+    #e11d48 50%,
+    #f4f4f5 60%,
+    #f4f4f5 100%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 6s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .titleShimmer {
+    animation: none;
+    -webkit-text-fill-color: #f4f4f5;
+    background: none;
+  }
+}
+
+.titleUnderline {
+  width: 64px;
+  height: 3px;
+  margin-top: 0.65rem;
+  background: linear-gradient(90deg, #e11d48, transparent);
+  transform-origin: left;
+}
+
+.glowText {
+  text-shadow: 0 0 40px rgba(225, 29, 72, 0.15);
+}

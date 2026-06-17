@@ -1,0 +1,18 @@
+.embers {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.ember {
+  position: absolute;
+  bottom: -12px;
+  border-radius: 50%;
+  background: #f43f5e;
+  box-shadow:
+    0 0 10px rgba(244, 63, 94, 0.95),
+    0 0 22px rgba(225, 29, 72, 0.6),
+    0 0 40px rgba(225, 29, 72, 0.25);
+}
