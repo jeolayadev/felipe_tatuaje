@@ -14,7 +14,7 @@ export const SafeImage = ({
   src, 
   alt, 
   className = '', 
-  loading = 'lazy',
+  loading = 'eager',
   srcSet,
   sizes,
 }: SafeImageProps) => {
@@ -35,7 +35,6 @@ export const SafeImage = ({
       className={className}
       loading={loading}
       decoding="async"
-      referrerPolicy="no-referrer"
       srcSet={srcSet}
       sizes={sizes}
       onError={() => setError(true)}
