@@ -6,6 +6,9 @@
 const unsplash = (id: string, w = 1200, h = 1500) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&h=${h}&q=90`;
 
+const unsplashQuery = (query: string, w = 1200, h = 1500) =>
+  `https://source.unsplash.com/${w}x${h}/?${encodeURIComponent(query)}`;
+
 export const BG_WALLPAPER = './bg-wallpaper.jpg';
 
 /** Trabajos japoneses — cada URL es sesión o pieza de tatuaje real */
@@ -15,7 +18,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Dragón irezumi',
     categoria: 'Dragón',
     estilo: 'Japonés' as const,
-    src: unsplash('1578482326433-ad1aabb9c928'),
+    src: unsplashQuery('tattoo,dragon,japanese'),
     alt: 'Tatuaje japonés de dragón en el brazo',
   },
   {
@@ -23,7 +26,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Espalda japonesa',
     categoria: 'Espalda',
     estilo: 'Japonés' as const,
-    src: unsplash('1611501437281-430bfbe1220a'),
+    src: unsplashQuery('japanese tattoo,back'),
     alt: 'Gran tatuaje japonés en la espalda',
   },
   {
@@ -31,7 +34,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Sesión en brazo',
     categoria: 'Irezumi',
     estilo: 'Japonés' as const,
-    src: unsplash('1597318911596-6fefab434df5'),
+    src: unsplashQuery('tattoo,arm,irezumi'),
     alt: 'Tatuaje irezumi japonés en el brazo',
   },
   {
@@ -39,7 +42,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Tatuaje en pierna',
     categoria: 'Manga',
     estilo: 'Japonés' as const,
-    src: unsplash('1721160223584-b3a19f2e0e6a'),
+    src: unsplashQuery('tattoo,leg,manga'),
     alt: 'Tatuaje manga en la pierna',
   },
   {
@@ -47,7 +50,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Trabajo en estudio',
     categoria: 'Irezumi',
     estilo: 'Japonés' as const,
-    src: unsplash('1704345910291-49168c7631b6'),
+    src: unsplashQuery('tattoo,studio,artist'),
     alt: 'Tatuador trabajando en el estudio',
   },
   {
@@ -55,7 +58,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Proceso de tatuaje',
     categoria: 'Koi',
     estilo: 'Japonés' as const,
-    src: unsplash('1562962230-16e4623d36e6'),
+    src: unsplashQuery('tattoo,process,artist'),
     alt: 'Cliente recibiendo tatuaje koi en el estudio',
   },
   {
@@ -115,19 +118,19 @@ export const TATTOO_BY_STYLE = {
     alt: 'Manga con tatuajes geométricos',
   },
   'Neo-Tradicional': {
-    src: unsplash('1599643478518-3a2cf6ef65b8'),
+    src: unsplashQuery('neo traditional tattoo'),
     alt: 'Tatuaje neo-tradicional con colores vibrantes',
   },
   Minimalista: {
-    src: unsplash('1591362692343-dddde0b65b6e'),
+    src: unsplashQuery('minimalist tattoo'),
     alt: 'Tatuaje minimalista en línea fina',
   },
   Acuarela: {
-    src: unsplash('1598641926362-b8d2ce1cb881'),
+    src: unsplashQuery('watercolor tattoo'),
     alt: 'Tatuaje de acuarela abstracta',
   },
   Dotwork: {
-    src: unsplash('1590080876384-b86f473b1d3f'),
+    src: unsplashQuery('dotwork tattoo'),
     alt: 'Tatuaje de puntos mandala',
   },
 } as const;
