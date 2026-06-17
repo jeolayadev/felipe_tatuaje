@@ -63,7 +63,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Tatuaje de fénix',
     categoria: 'Fénix',
     estilo: 'Japonés' as const,
-    src: unsplash('1577720643-f3fa5995135d'),
+    src: unsplash('1599643478518-3a2cf6ef65b8'),
     alt: 'Tatuaje de fénix en llamas estilo japonés',
   },
   {
@@ -71,7 +71,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Onda grande',
     categoria: 'Naturaleza',
     estilo: 'Japonés' as const,
-    src: unsplash('1518591913807-1e0fb900a89a'),
+    src: unsplash('1598641926362-b8d2ce1cb881'),
     alt: 'Tatuaje de onda grande tradicional japonés',
   },
   {
@@ -79,7 +79,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Flor de cerezo',
     categoria: 'Floral',
     estilo: 'Japonés' as const,
-    src: unsplash('1580882321217-7cf47aff0752'),
+    src: unsplash('1591362692343-dddde0b65b6e'),
     alt: 'Tatuaje de flor de cerezo en el cuello',
   },
   {
@@ -87,14 +87,14 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Máscara Noh',
     categoria: 'Cultural',
     estilo: 'Japonés' as const,
-    src: unsplash('1584516677226-4b0be00c4b7b'),
+    src: unsplash('1590080876384-b86f473b1d3f'),
     alt: 'Tatuaje de máscara Noh tradicional',
   },
 ] as const;
 
 export type JapaneseCategory = (typeof JAPANESE_WORKS_HD)[number]['categoria'];
 
-export const PORTFOLIO_IMAGES = [...JAPANESE_WORKS_HD];
+export const PORTFOLIO_IMAGES = JAPANESE_WORKS_HD.slice(0, 6);
 
 /** Hero — una foto de tatuaje por estilo */
 export const TATTOO_BY_STYLE = {
@@ -115,19 +115,19 @@ export const TATTOO_BY_STYLE = {
     alt: 'Manga con tatuajes geométricos',
   },
   'Neo-Tradicional': {
-    src: unsplash('1552820745-97b0261ce338'),
+    src: unsplash('1599643478518-3a2cf6ef65b8'),
     alt: 'Tatuaje neo-tradicional con colores vibrantes',
   },
   Minimalista: {
-    src: unsplash('1584516677226-4b0be00c4b7b'),
+    src: unsplash('1591362692343-dddde0b65b6e'),
     alt: 'Tatuaje minimalista en línea fina',
   },
   Acuarela: {
-    src: unsplash('1580882321217-7cf47aff0752'),
+    src: unsplash('1598641926362-b8d2ce1cb881'),
     alt: 'Tatuaje de acuarela abstracta',
   },
   Dotwork: {
-    src: unsplash('1518591913807-1e0fb900a89a'),
+    src: unsplash('1590080876384-b86f473b1d3f'),
     alt: 'Tatuaje de puntos mandala',
   },
 } as const;
