@@ -58,6 +58,38 @@ export const JAPANESE_WORKS_HD = [
     src: unsplash('1562962230-16e4623d36e6'),
     alt: 'Cliente recibiendo tatuaje koi en el estudio',
   },
+  {
+    id: 7,
+    titulo: 'Tatuaje de fénix',
+    categoria: 'Fénix',
+    estilo: 'Japonés' as const,
+    src: unsplash('1577720643-f3fa5995135d'),
+    alt: 'Tatuaje de fénix en llamas estilo japonés',
+  },
+  {
+    id: 8,
+    titulo: 'Onda grande',
+    categoria: 'Naturaleza',
+    estilo: 'Japonés' as const,
+    src: unsplash('1518591913807-1e0fb900a89a'),
+    alt: 'Tatuaje de onda grande tradicional japonés',
+  },
+  {
+    id: 9,
+    titulo: 'Flor de cerezo',
+    categoria: 'Floral',
+    estilo: 'Japonés' as const,
+    src: unsplash('1580882321217-7cf47aff0752'),
+    alt: 'Tatuaje de flor de cerezo en el cuello',
+  },
+  {
+    id: 10,
+    titulo: 'Máscara Noh',
+    categoria: 'Cultural',
+    estilo: 'Japonés' as const,
+    src: unsplash('1584516677226-4b0be00c4b7b'),
+    alt: 'Tatuaje de máscara Noh tradicional',
+  },
 ] as const;
 
 export type JapaneseCategory = (typeof JAPANESE_WORKS_HD)[number]['categoria'];
@@ -81,6 +113,22 @@ export const TATTOO_BY_STYLE = {
   Geométrico: {
     src: unsplash('1613682719869-662cb221149f'),
     alt: 'Manga con tatuajes geométricos',
+  },
+  'Neo-Tradicional': {
+    src: unsplash('1552820745-97b0261ce338'),
+    alt: 'Tatuaje neo-tradicional con colores vibrantes',
+  },
+  Minimalista: {
+    src: unsplash('1584516677226-4b0be00c4b7b'),
+    alt: 'Tatuaje minimalista en línea fina',
+  },
+  Acuarela: {
+    src: unsplash('1580882321217-7cf47aff0752'),
+    alt: 'Tatuaje de acuarela abstracta',
+  },
+  Dotwork: {
+    src: unsplash('1518591913807-1e0fb900a89a'),
+    alt: 'Tatuaje de puntos mandala',
   },
 } as const;
 
