@@ -17,7 +17,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Dragón irezumi',
     categoria: 'Dragón',
     estilo: 'Japonés' as const,
-    src: `${BASE}gallery/web/1.jpg`,
+    src: `${BASE}gallery/1.jpg`,
     alt: 'Tatuaje japonés de dragón en el brazo',
   },
   {
@@ -25,7 +25,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Espalda japonesa',
     categoria: 'Espalda',
     estilo: 'Japonés' as const,
-    src: `${BASE}gallery/web/2.jpg`,
+    src: `${BASE}gallery/2.jpg`,
     alt: 'Gran tatuaje japonés en la espalda',
   },
   {
@@ -33,7 +33,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Sesión en brazo',
     categoria: 'Irezumi',
     estilo: 'Japonés' as const,
-    src: `${BASE}gallery/web/3.jpg`,
+    src: `${BASE}gallery/3.jpg`,
     alt: 'Tatuaje irezumi japonés en el brazo',
   },
   {
@@ -41,7 +41,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Girasol antebrazo',
     categoria: 'Antebrazo',
     estilo: 'Japonés' as const,
-    src: `${BASE}gallery/web/4-TOP-4-Tatuajes-en-el-Antebrazo-Girasol-Realista-con-Ramas-Hojas-Pajaros-Golondrinas-en-Negro.jpg`,
+    src: `${BASE}gallery/4-TOP-4-Tatuajes-en-el-Antebrazo-Girasol-Realista-con-Ramas-Hojas-Pajaros-Golondrinas-en-Negro.jpg`,
     alt: 'Tatuaje girasol realista en antebrazo',
   },
   {
@@ -49,7 +49,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Detalle estudio',
     categoria: 'Detalle',
     estilo: 'Japonés' as const,
-    src: `${BASE}gallery/web/4c92b8553bc6c61b2f68658120c95873.jpg`,
+    src: `${BASE}gallery/4c92b8553bc6c61b2f68658120c95873.jpg`,
     alt: 'Detalle de sesión de tatuaje en estudio',
   },
   {
@@ -57,7 +57,7 @@ export const JAPANESE_WORKS_HD = [
     titulo: 'Dragón espalda',
     categoria: 'Espalda',
     estilo: 'Japonés' as const,
-    src: `${BASE}gallery/web/Japanese-Dragon-Back-Tattoo-774x960.jpg`,
+    src: `${BASE}gallery/Japanese-Dragon-Back-Tattoo-774x960.jpg`,
     alt: 'Gran tatuaje de dragón en la espalda',
   },
   {
