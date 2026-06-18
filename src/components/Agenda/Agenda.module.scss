@@ -892,6 +892,37 @@
   font-size: 0.9rem;
 }
 
+.dateHint {
+  display: none;
+
+  @media (max-width: 560px) {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    margin: 0 0 0.5rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #71717a;
+
+    span {
+      color: #e11d48;
+      animation: dateNudge 1.4s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes dateNudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
 .dateGrid {
   display: grid;
   grid-template-columns: repeat(7, minmax(86px, 1fr));
@@ -902,12 +933,32 @@
   }
 
   @media (max-width: 560px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* Calendario -> tira horizontal deslizable para evitar 14 filas de fechas */
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    scrollbar-width: none;
+  }
+
+  @media (max-width: 560px) {
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 
 .dateButton {
   min-height: 118px;
+
+  @media (max-width: 560px) {
+    flex: 0 0 30%;
+    scroll-snap-align: start;
+    min-height: 104px;
+  }
   display: flex;
   flex-direction: column;
   justify-content: center;

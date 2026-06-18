@@ -358,22 +358,44 @@
       max-width: 100%;
     }
 
+    /* Chips de estilos -> una sola fila deslizable (sin apilar 3 filas) */
     .estilos {
-      gap: 0.35rem;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 0.4rem;
+      margin-top: 1rem;
+      padding-bottom: 0.25rem;
+      scrollbar-width: none;
+    }
+
+    .estilos::-webkit-scrollbar {
+      display: none;
     }
 
     .estilos li {
+      flex: 0 0 auto;
+      white-space: nowrap;
       font-size: 0.65rem;
-      padding: 0.3rem 0.55rem;
+      padding: 0.4rem 0.7rem;
     }
 
+    /* Acciones: principal a lo ancho + dos secundarios lado a lado */
     .actions {
-      flex-direction: column;
-      align-items: stretch;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.25rem;
     }
 
-    .actions button {
-      width: 100%;
+    .primary {
+      flex: 1 1 100%;
+    }
+
+    .availability,
+    .secondary {
+      flex: 1 1 calc(50% - 0.25rem);
+      min-width: 0;
+      font-size: 0.95rem;
+      padding: 0.7rem 0.75rem;
     }
 
     .visual {
@@ -382,7 +404,7 @@
     }
 
     .carousel {
-      aspect-ratio: 3 / 4;
+      aspect-ratio: 4 / 5;
     }
 
     .slideLabel {
@@ -392,35 +414,45 @@
       font-size: 0.6rem;
     }
 
+    /* Miniaturas -> tira horizontal deslizable (antes se apilaban) */
     .thumbs {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.4rem;
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 0.5rem;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.25rem;
+      scrollbar-width: none;
+    }
+
+    .thumbs::-webkit-scrollbar {
+      display: none;
     }
 
     .thumb {
-      aspect-ratio: 4 / 3;
+      flex: 0 0 22%;
+      aspect-ratio: 1;
+      scroll-snap-align: start;
     }
 
     .thumbTag {
-      font-size: 0.6rem;
-      padding: 0.25rem;
+      font-size: 0.55rem;
+      padding: 0.2rem;
     }
   }
 
   @media (max-width: 420px) {
     .hero {
-      padding: 2.5rem 0.75rem 1.5rem;
+      padding: 4.5rem 0.75rem 1.5rem;
+      min-height: auto;
     }
 
     .title {
       font-size: clamp(3rem, 14vw, 5.5rem);
     }
 
-    .actions {
-      gap: 0.5rem;
-    }
-
-    .thumbs {
-      grid-template-columns: 1fr;
+    .thumb {
+      flex: 0 0 26%;
     }
   }

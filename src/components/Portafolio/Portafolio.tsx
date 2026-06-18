@@ -67,7 +67,11 @@ export const Portafolio = () => {
       <div className={styles.wrap}>
         <SectionTitle subtitle="Colección irezumi · Full HD">Trabajos japoneses</SectionTitle>
 
-        <LuxuryCarousel />
+        {/* Carrusel 3D decorativo: solo en tablet/escritorio. En teléfono se usa
+            el carrusel deslizable de tarjetas para evitar scroll excesivo. */}
+        <div className={styles.luxuryWrap}>
+          <LuxuryCarousel />
+        </div>
 
         <SectionReveal delay={0.1}>
           <div className={styles.filtros}>
@@ -90,6 +94,10 @@ export const Portafolio = () => {
             ))}
           </div>
         </SectionReveal>
+
+        <p className={styles.swipeHint} aria-hidden>
+          Desliza para ver más <span>→</span>
+        </p>
 
         <motion.div
           ref={gridRef}
