@@ -106,6 +106,45 @@
   border-radius: 3px;
 }
 
+/* El carrusel 3D solo aparece en pantallas grandes */
+.luxuryWrap {
+  @media (max-width: 640px) {
+    display: none;
+  }
+}
+
+/* Pista para deslizar el carrusel de tarjetas — solo en teléfono */
+.swipeHint {
+  display: none;
+
+  @media (max-width: 640px) {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    margin: 0 0 0.65rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #71717a;
+
+    span {
+      color: #e11d48;
+      animation: swipeNudge 1.4s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes swipeNudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -360,8 +399,30 @@
     display: none;
   }
 
+  /* Grid -> carrusel horizontal deslizable (scroll-snap nativo).
+     Reduce drasticamente el scroll vertical en telefonos. */
   .grid {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-wrap: nowrap;
+    grid-template-columns: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 0.75rem;
+    padding: 0.25rem 0.25rem 0.75rem;
+    margin: 0 -0.25rem;
+    scrollbar-width: none;
+  }
+
+  .grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .card {
+    flex: 0 0 80%;
+    max-width: 80%;
+    scroll-snap-align: center;
+    aspect-ratio: 3 / 4;
   }
 
   .meta {

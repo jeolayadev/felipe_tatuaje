@@ -910,6 +910,9 @@ const ClientAgenda = ({ schedule, bookings, setBookings, dates }: ClientAgendaPr
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.5, ease: EASE }}
           >
+            <p className={styles.dateHint} aria-hidden>
+              Desliza para ver más fechas <span>→</span>
+            </p>
             <div className={styles.dateGrid}>
               {dateCards.map((item) => (
                 <button
