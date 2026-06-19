@@ -106,8 +106,22 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  /* Se mantiene en 2x2 (antes 1 columna => 4 botones altos apilados). */
   @media (max-width: 430px) {
-    grid-template-columns: 1fr;
+    gap: 0.5rem;
+
+    button {
+      min-height: 62px;
+      padding: 0.6rem;
+
+      strong {
+        font-size: 0.98rem;
+      }
+
+      span {
+        font-size: 0.66rem;
+      }
+    }
   }
 }
 
@@ -147,6 +161,27 @@
     font-size: 2.7rem;
     letter-spacing: 0.04em;
     line-height: 1;
+  }
+
+  /* 2x2 compacto en telefono para no apilar 4 tarjetas altas. */
+  @media (max-width: 480px) {
+    gap: 0.5rem;
+
+    article {
+      min-height: 0;
+      padding: 0.7rem;
+      gap: 0.15rem;
+    }
+
+    strong {
+      font-size: 1.9rem;
+    }
+
+    span,
+    small {
+      font-size: 0.58rem;
+      letter-spacing: 0.05em;
+    }
   }
 }
 
@@ -380,28 +415,111 @@
 
 .dayList {
   display: grid;
-  gap: 0.75rem;
+  gap: 0.6rem;
 }
 
 .dayRow {
-  display: grid;
-  grid-template-columns: minmax(150px, 0.7fr) minmax(220px, 1fr) auto;
-  gap: 1rem;
-  align-items: center;
-  padding: 0.9rem;
+  padding: 0.8rem 0.9rem;
   background: #111;
   border: 1px solid #27272a;
-  border-radius: 6px;
-
-  @media (max-width: 720px) {
-    grid-template-columns: 1fr;
-    gap: 0.85rem;
-  }
+  border-radius: 8px;
+  transition: border-color 0.2s, background 0.2s;
 }
 
 .dayEnabled {
   border-color: rgba(74, 222, 128, 0.42);
   background: rgba(20, 28, 24, 0.95);
+}
+
+.dayHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+/* Resumen plegable de cada dia (acordeon en telefono) */
+.dayToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 999px;
+  padding: 0.34rem 0.7rem 0.34rem 0.85rem;
+  color: #d4d4d8;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+
+  &:hover {
+    border-color: #e11d48;
+    color: #f4f4f5;
+  }
+}
+
+.daySummary {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.chevron {
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-1px);
+  transition: transform 0.25s ease;
+}
+
+.dayOpen .chevron {
+  transform: rotate(-135deg) translateY(-1px);
+}
+
+.dayBody {
+  margin-top: 0.85rem;
+}
+
+/* Escritorio/tablet: todo visible en una fila, sin acordeon. */
+@media (min-width: 721px) {
+  .dayToggle {
+    display: none;
+  }
+
+  .dayRow {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .dayHead {
+    flex: 0 0 auto;
+    min-width: 150px;
+  }
+
+  .dayBody {
+    margin-top: 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .dayBody .timeGrid {
+    flex: 1;
+  }
+}
+
+/* Telefono/tablet angosto: cada dia se colapsa; solo se expande el activo. */
+@media (max-width: 720px) {
+  .dayBody {
+    display: none;
+  }
+
+  .dayOpen .dayBody {
+    display: block;
+  }
 }
 
 .switchLabel {
@@ -452,14 +570,10 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.75rem;
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-  }
 }
 
 .dayStatus {
-  justify-self: end;
+  display: inline-block;
   color: #d4d4d8;
   background: #18181b;
   border: 1px solid #27272a;
@@ -469,9 +583,11 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  white-space: nowrap;
 
   @media (max-width: 720px) {
-    justify-self: start;
+    /* En telefono el estado ya se ve en el resumen plegable. */
+    display: none;
   }
 }
 

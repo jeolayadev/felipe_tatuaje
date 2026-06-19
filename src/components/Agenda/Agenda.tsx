@@ -262,6 +262,7 @@ const ArtistAgenda = ({ schedule, setSchedule, bookings, setBookings, dates }: A
   const [activePanel, setActivePanel] = useState<ArtistPanel>('gobernar');
   const [blockedDate, setBlockedDate] = useState('');
   const [saveMessage, setSaveMessage] = useState('');
+  const [expandedDay, setExpandedDay] = useState<WeekdayKey | null>(null);
   const [now] = useState(() => Date.now());
   const today = dates[0];
   const orderedBookings = useMemo(
@@ -541,44 +542,66 @@ const ArtistAgenda = ({ schedule, setSchedule, bookings, setBookings, dates }: A
                 <div className={styles.dayList}>
                   {WEEKDAYS.map((weekday) => {
                     const day = schedule.days[weekday.key];
+                    const isOpen = expandedDay === weekday.key;
 
                     return (
                       <article
                         key={weekday.key}
-                        className={`${styles.dayRow} ${day.enabled ? styles.dayEnabled : ''}`}
+                        className={`${styles.dayRow} ${day.enabled ? styles.dayEnabled : ''} ${
+                          isOpen ? styles.dayOpen : ''
+                        }`}
                       >
-                        <label className={styles.switchLabel}>
-                          <input
-                            type="checkbox"
-                            checked={day.enabled}
-                            onChange={(event) => updateDay(weekday.key, { enabled: event.target.checked })}
-                          />
-                          <span />
-                          <strong>{weekday.label}</strong>
-                        </label>
+                        <div className={styles.dayHead}>
+                          <label className={styles.switchLabel}>
+                            <input
+                              type="checkbox"
+                              checked={day.enabled}
+                              onChange={(event) => updateDay(weekday.key, { enabled: event.target.checked })}
+                            />
+                            <span />
+                            <strong>{weekday.label}</strong>
+                          </label>
 
-                        <div className={styles.timeGrid}>
-                          <label>
-                            Inicio
-                            <input
-                              type="time"
-                              value={day.start}
-                              disabled={!day.enabled}
-                              onChange={(event) => updateDay(weekday.key, { start: event.target.value })}
-                            />
-                          </label>
-                          <label>
-                            Termino
-                            <input
-                              type="time"
-                              value={day.end}
-                              disabled={!day.enabled}
-                              onChange={(event) => updateDay(weekday.key, { end: event.target.value })}
-                            />
-                          </label>
+                          {/* Resumen + boton acordeon: en telefono colapsa cada dia
+                              para evitar 7 tarjetas altas apiladas. */}
+                          <button
+                            type="button"
+                            className={styles.dayToggle}
+                            aria-expanded={isOpen}
+                            aria-label={`${isOpen ? 'Cerrar' : 'Editar'} horario de ${weekday.label}`}
+                            onClick={() => setExpandedDay((current) => (current === weekday.key ? null : weekday.key))}
+                          >
+                            <span className={styles.daySummary}>
+                              {day.enabled ? `${day.start} – ${day.end}` : 'No trabaja'}
+                            </span>
+                            <span className={styles.chevron} aria-hidden />
+                          </button>
                         </div>
 
-                        <span className={styles.dayStatus}>{day.enabled ? 'Trabaja' : 'No trabaja'}</span>
+                        <div className={styles.dayBody}>
+                          <div className={styles.timeGrid}>
+                            <label>
+                              Inicio
+                              <input
+                                type="time"
+                                value={day.start}
+                                disabled={!day.enabled}
+                                onChange={(event) => updateDay(weekday.key, { start: event.target.value })}
+                              />
+                            </label>
+                            <label>
+                              Termino
+                              <input
+                                type="time"
+                                value={day.end}
+                                disabled={!day.enabled}
+                                onChange={(event) => updateDay(weekday.key, { end: event.target.value })}
+                              />
+                            </label>
+                          </div>
+
+                          <span className={styles.dayStatus}>{day.enabled ? 'Trabaja' : 'No trabaja'}</span>
+                        </div>
                       </article>
                     );
                   })}
