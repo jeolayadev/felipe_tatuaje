@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BRAND } from '../../utils/constants';
 import { HERO_IMAGES, type TattooStyle } from '../../data/images';
@@ -12,6 +12,7 @@ const ESTILOS = HERO_IMAGES.map((img) => img.estilo);
 
 export const Hero = () => {
   const [active, setActive] = useState(0);
+  const thumbsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setInterval(
@@ -20,6 +21,18 @@ export const Hero = () => {
     );
     return () => clearInterval(timer);
   }, []);
+
+  // En telefono la tira de miniaturas sigue a la imagen activa.
+  useEffect(() => {
+    const strip = thumbsRef.current;
+    const el = strip?.children[active] as HTMLElement | undefined;
+    if (strip && el) {
+      strip.scrollTo({
+        left: el.offsetLeft - strip.clientWidth / 2 + el.clientWidth / 2,
+        behavior: 'smooth',
+      });
+    }
+  }, [active]);
 
   const go = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -145,7 +158,7 @@ export const Hero = () => {
             <div className={styles.slideBorder} />
           </div>
 
-          <div className={styles.thumbs}>
+          <div className={styles.thumbs} ref={thumbsRef}>
             {HERO_IMAGES.map((img, i) => (
               <motion.button
                 key={img.estilo}

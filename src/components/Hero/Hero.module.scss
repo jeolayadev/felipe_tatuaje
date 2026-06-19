@@ -28,6 +28,13 @@
   gap: 2.5rem;
   align-items: center;
 
+  /* Los items de un grid tienen min-width:auto por defecto; si un hijo
+     (carrusel, botones, tira de miniaturas) no puede encoger, el track
+     crece mas que la pantalla y desborda. min-width:0 lo evita. */
+  > * {
+    min-width: 0;
+  }
+
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -229,6 +236,8 @@
 
 .carousel {
   position: relative;
+  width: 100%;
+  max-width: 100%;
   border-radius: 8px;
   overflow: hidden;
   aspect-ratio: 4/5;

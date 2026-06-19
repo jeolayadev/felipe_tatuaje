@@ -15,9 +15,18 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  // El wallpaper vive en public/. Lo referenciamos con BASE_URL para que
+  // resuelva bien en el deploy (GitHub Pages bajo /felipe_tatuaje/), en vez
+  // de la ruta relativa del CSS que apuntaba a /assets/ y daba 404.
+  const wallpaper = `${import.meta.env.BASE_URL}bg-wallpaper.jpg`
+
   return (
     <div className="app">
-      <div className="site-bg" aria-hidden />
+      <div
+        className="site-bg"
+        aria-hidden
+        style={{ backgroundImage: `url('${wallpaper}')` }}
+      />
       <Navbar viewMode={viewMode} onToggleView={toggleViewMode} />
       {viewMode === 'cliente' ? (
         <>

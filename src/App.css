@@ -41,7 +41,10 @@ body {
   position: fixed;
   inset: 0;
   z-index: 0;
-  background: url('./bg-wallpaper.jpg') center / cover no-repeat;
+  /* La imagen se inyecta via style inline (BASE_URL) en App.tsx */
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   pointer-events: none;
 }
 
@@ -49,7 +52,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(12, 12, 12, 0.82);
+  background: rgba(12, 12, 12, 0.78);
 }
 
 .app > *:not(.site-bg) {

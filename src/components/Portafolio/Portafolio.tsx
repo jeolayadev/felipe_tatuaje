@@ -6,6 +6,7 @@ import { SafeImage } from '../ui/SafeImage';
 import { SectionReveal } from '../ui/SectionReveal';
 import { SectionTitle } from '../ui/AnimatedText';
 import { LuxuryCarousel } from '../LuxuryCarousel/LuxuryCarousel';
+import { useIsMobile } from '../../hooks/useMediaQuery';
 import { staggerContainer, staggerItem } from '../../utils/motion';
 import styles from './Portafolio.module.scss';
 
@@ -13,8 +14,9 @@ const filtros = ['Todos', 'Dragón', 'Koi', 'Manga', 'Espalda', 'Irezumi'];
 
 export const Portafolio = () => {
   const [filtro, setFiltro] = useState('Todos');
-  const gridRef = useRef(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const gridInView = useInView(gridRef, { once: true, margin: '-40px' });
+  const isMobile = useIsMobile();
 
   const lista =
     filtro === 'Todos'
@@ -59,6 +61,43 @@ export const Portafolio = () => {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [selected]);
+
+  // Auto-desplazamiento del carrusel de tarjetas en telefono. Se pausa al
+  // tocar y mientras el lightbox este abierto, y reinicia al llegar al final.
+  useEffect(() => {
+    if (!isMobile || selected) return;
+    const el = gridRef.current;
+    if (!el) return;
+
+    let paused = false;
+    let resumeTimer: ReturnType<typeof setTimeout>;
+    const pause = () => {
+      paused = true;
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => { paused = false; }, 4500);
+    };
+    el.addEventListener('touchstart', pause, { passive: true });
+    el.addEventListener('pointerdown', pause);
+
+    const id = setInterval(() => {
+      if (paused) return;
+      const first = el.firstElementChild as HTMLElement | null;
+      const step = first ? first.clientWidth + 12 : el.clientWidth;
+      const maxScroll = el.scrollWidth - el.clientWidth - 8;
+      if (el.scrollLeft >= maxScroll) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: step, behavior: 'smooth' });
+      }
+    }, 3500);
+
+    return () => {
+      clearInterval(id);
+      clearTimeout(resumeTimer);
+      el.removeEventListener('touchstart', pause);
+      el.removeEventListener('pointerdown', pause);
+    };
+  }, [isMobile, selected, filtro]);
 
   return (
     <section id="portafolio" className={styles.section}>
