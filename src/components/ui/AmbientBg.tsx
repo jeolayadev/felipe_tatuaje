@@ -50,14 +50,50 @@ export const AmbientBg = ({ variant = 'section' }: AmbientBgProps) => {
   const isMobile = useIsMobile();
   const prefersReduced = useReducedMotion();
 
-  // En telefono (o con movimiento reducido) renderizamos una version ligera:
-  // solo capas estaticas, sin decenas de animaciones infinitas que generan jank.
-  if (isMobile || prefersReduced) {
+  // Con movimiento reducido: todo estatico (accesibilidad).
+  if (prefersReduced) {
     return (
       <div className={`${styles.ambient} ${styles[variant]}`} aria-hidden>
         <div className={styles.pulseGlow} />
         <div className={styles.grid} />
       </div>
+    );
+  }
+
+  // En telefono renderizamos una version VIVA pero ligera: glow que late,
+  // dos orbes que flotan y un barrido. Evitamos las ~32 brasas y los 8 motivos
+  // por instancia (eso era lo que generaba jank), conservando el movimiento.
+  if (isMobile) {
+    return (
+      <motion.div
+        className={`${styles.ambient} ${styles[variant]}`}
+        aria-hidden
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
+        <motion.div
+          className={styles.pulseGlow}
+          animate={{ opacity: [0.4, 0.7, 0.4], scale: [1, 1.12, 1] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className={styles.orb1}
+          animate={{ x: [0, 30, -18, 0], y: [0, -24, 14, 0], scale: [1, 1.1, 0.95, 1] }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className={styles.orb2}
+          animate={{ x: [0, -34, 20, 0], y: [0, 28, -16, 0], scale: [1, 1.08, 1, 1] }}
+          transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <div className={styles.grid} />
+        <motion.div
+          className={styles.scanline}
+          animate={{ y: ['-120%', '220%'] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+        />
+      </motion.div>
     );
   }
 
