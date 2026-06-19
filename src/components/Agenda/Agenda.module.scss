@@ -43,6 +43,40 @@
   }
 }
 
+.artistTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.logoutBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(12, 12, 12, 0.5);
+  border: 1px solid #3f3f46;
+  border-radius: 999px;
+  color: #d4d4d8;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.4rem 0.85rem;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+
+  svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  &:hover {
+    border-color: #e11d48;
+    color: #fff;
+    background: rgba(225, 29, 72, 0.16);
+  }
+}
+
 .artistHeroCopy {
   display: flex;
   min-width: 0;
