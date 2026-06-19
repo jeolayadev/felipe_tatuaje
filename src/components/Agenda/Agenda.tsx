@@ -5,6 +5,7 @@ import { EASE } from '../../utils/motion';
 import { ClientCard } from '../ui/ClientCard';
 import { DashboardMetrics } from '../ui/DashboardMetrics';
 import { ReminderPanel } from '../ui/ReminderPanel';
+import { IconCalendar, IconClock, IconClients, IconNeedle } from '../ui/icons/MetricIcons';
 import styles from './Agenda.module.scss';
 
 export type ViewMode = 'cliente' | 'tatuador';
@@ -76,6 +77,7 @@ type Reminder = {
 
 type AgendaProps = {
   viewMode: ViewMode;
+  onLogout?: () => void;
 };
 
 const SCHEDULE_STORAGE_KEY = 'noir-ink-schedule-v1';
@@ -227,7 +229,7 @@ const ARTIST_ACTIONS: Array<{ panel: ArtistPanel; label: string; detail: string 
   { panel: 'usuarios', label: 'Ver usuarios', detail: 'Clientes agendados' },
 ];
 
-export const Agenda = ({ viewMode }: AgendaProps) => {
+export const Agenda = ({ viewMode, onLogout }: AgendaProps) => {
   const [schedule, setSchedule] = useStoredState<Schedule>(SCHEDULE_STORAGE_KEY, DEFAULT_SCHEDULE);
   const [bookings, setBookings] = useStoredState<Booking[]>(BOOKINGS_STORAGE_KEY, []);
   const dates = useMemo(() => getUpcomingDates(28), []);
@@ -239,6 +241,7 @@ export const Agenda = ({ viewMode }: AgendaProps) => {
       bookings={bookings}
       setBookings={setBookings}
       dates={dates}
+      onLogout={onLogout}
     />
   ) : (
     <ClientAgenda
@@ -256,9 +259,10 @@ type ArtistAgendaProps = {
   bookings: Booking[];
   setBookings: React.Dispatch<React.SetStateAction<Booking[]>>;
   dates: string[];
+  onLogout?: () => void;
 };
 
-const ArtistAgenda = ({ schedule, setSchedule, bookings, setBookings, dates }: ArtistAgendaProps) => {
+const ArtistAgenda = ({ schedule, setSchedule, bookings, setBookings, dates, onLogout }: ArtistAgendaProps) => {
   const [activePanel, setActivePanel] = useState<ArtistPanel>('gobernar');
   const [blockedDate, setBlockedDate] = useState('');
   const [saveMessage, setSaveMessage] = useState('');
@@ -435,7 +439,18 @@ const ArtistAgenda = ({ schedule, setSchedule, bookings, setBookings, dates }: A
           transition={{ duration: 0.45, ease: EASE }}
         >
           <div className={styles.artistHeroCopy}>
-            <p className={styles.eyebrow}>Vista tatuador</p>
+            <div className={styles.artistTopRow}>
+              <p className={styles.eyebrow}>Vista tatuador · Panel privado</p>
+              {onLogout && (
+                <button type="button" className={styles.logoutBtn} onClick={onLogout}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3" />
+                    <path d="M10 17l-5-5 5-5M5 12h11" />
+                  </svg>
+                  Cerrar sesión
+                </button>
+              )}
+            </div>
             <h2>Gobernar agenda</h2>
             <p>
               Controla disponibilidad, reservas y clientes desde un panel pensado para operar el dia.
@@ -467,7 +482,7 @@ const ArtistAgenda = ({ schedule, setSchedule, bookings, setBookings, dates }: A
                     label: 'Proximas citas',
                     value: upcomingBookings.length,
                     subvalue: `${todayBookings.length} hoy`,
-                    icon: '📅',
+                    icon: <IconCalendar />,
                     trend: upcomingBookings.length > 5 ? 'up' : 'neutral',
                     color: 'gold',
                   },
@@ -475,7 +490,7 @@ const ArtistAgenda = ({ schedule, setSchedule, bookings, setBookings, dates }: A
                     label: 'Cupos libres',
                     value: availableNextWeek,
                     subvalue: 'en 7 días',
-                    icon: '⏰',
+                    icon: <IconClock />,
                     trend: availableNextWeek > 10 ? 'up' : 'down',
                     color: 'blue',
                   },
@@ -483,7 +498,7 @@ const ArtistAgenda = ({ schedule, setSchedule, bookings, setBookings, dates }: A
                     label: 'Clientes',
                     value: clients.length,
                     subvalue: 'con reserva',
-                    icon: '👥',
+                    icon: <IconClients />,
                     trend: clients.length > 0 ? 'up' : 'neutral',
                     color: 'green',
                   },
@@ -491,7 +506,7 @@ const ArtistAgenda = ({ schedule, setSchedule, bookings, setBookings, dates }: A
                     label: 'Dias activos',
                     value: workingDays,
                     subvalue: 'por semana',
-                    icon: '🎯',
+                    icon: <IconNeedle />,
                     trend: 'neutral',
                     color: 'gold',
                   },

@@ -5,14 +5,27 @@ import { Portafolio } from './components/Portafolio/Portafolio'
 import { Agenda, type ViewMode } from './components/Agenda/Agenda'
 import { Contacto } from './components/Contacto/Contacto'
 import { Footer } from './components/Footer/Footer'
+import { ArtistLogin } from './components/Auth/ArtistLogin'
+import { useArtistAuth } from './hooks/useArtistAuth'
 import './App.css'
 
 function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('cliente')
+  const { authed, login, logout } = useArtistAuth()
 
   const toggleViewMode = () => {
     setViewMode((current) => (current === 'cliente' ? 'tatuador' : 'cliente'))
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const goToClient = () => {
+    setViewMode('cliente')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleLogout = () => {
+    logout()
+    goToClient()
   }
 
   // El wallpaper vive en public/. Lo referenciamos con BASE_URL para que
@@ -35,8 +48,10 @@ function App() {
           <Agenda viewMode={viewMode} />
           <Contacto />
         </>
+      ) : authed ? (
+        <Agenda viewMode={viewMode} onLogout={handleLogout} />
       ) : (
-        <Agenda viewMode={viewMode} />
+        <ArtistLogin onSubmit={login} onBack={goToClient} />
       )}
       <Footer />
     </div>

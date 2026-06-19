@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
+import type { ReactNode } from 'react';
 import styles from './DashboardMetrics.module.scss';
 
 interface Metric {
   label: string;
   value: string | number;
   subvalue?: string;
-  icon: string;
+  icon: ReactNode;
   trend?: 'up' | 'down' | 'neutral';
   color?: 'gold' | 'blue' | 'green' | 'red';
 }
@@ -43,7 +44,12 @@ export const DashboardMetrics = ({ metrics, title }: DashboardMetricsProps) => {
             transition={{ duration: 0.4, delay: index * 0.1 }}
             whileHover={{ y: -4 }}
           >
-            <div className={styles.icon}>{metric.icon}</div>
+            <div
+              className={styles.icon}
+              style={{ color: metric.color ? colorMap[metric.color] : '#d4af37' }}
+            >
+              {metric.icon}
+            </div>
 
             <div className={styles.content}>
               <span className={styles.label}>{metric.label}</span>
