@@ -1,5 +1,6 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { EmberParticles } from './EmberParticles';
+import { useIsMobile } from '../../hooks/useMediaQuery';
 import styles from './AmbientBg.module.scss';
 
 type Variant = 'hero' | 'section' | 'contact';
@@ -45,7 +46,22 @@ const CrossSvg = ({ size }: { size: number }) => (
   </svg>
 );
 
-export const AmbientBg = ({ variant = 'section' }: AmbientBgProps) => (
+export const AmbientBg = ({ variant = 'section' }: AmbientBgProps) => {
+  const isMobile = useIsMobile();
+  const prefersReduced = useReducedMotion();
+
+  // En telefono (o con movimiento reducido) renderizamos una version ligera:
+  // solo capas estaticas, sin decenas de animaciones infinitas que generan jank.
+  if (isMobile || prefersReduced) {
+    return (
+      <div className={`${styles.ambient} ${styles[variant]}`} aria-hidden>
+        <div className={styles.pulseGlow} />
+        <div className={styles.grid} />
+      </div>
+    );
+  }
+
+  return (
   <motion.div
     className={`${styles.ambient} ${styles[variant]}`}
     aria-hidden
@@ -107,4 +123,5 @@ export const AmbientBg = ({ variant = 'section' }: AmbientBgProps) => (
       transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
     />
   </motion.div>
-);
+  );
+};
