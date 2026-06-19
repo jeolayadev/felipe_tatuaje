@@ -341,12 +341,15 @@
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
 }
   @media (max-width: 640px) {
+    /* En telefono el hero ya no se fuerza a pantalla completa: fluye con el
+       contenido para no dejar una primera pantalla vacia/desproporcionada. */
     .hero {
-      padding: 3.5rem 1rem 2rem;
+      padding: 5rem 1rem 1.75rem;
+      min-height: auto;
     }
 
     .inner {
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
     .copy {
