@@ -406,8 +406,10 @@
       margin: 0 auto;
     }
 
+    /* Banner compacto: antes ocupaba casi toda la pantalla (4/5) */
     .carousel {
-      aspect-ratio: 4 / 5;
+      aspect-ratio: 16 / 10;
+      max-height: 38vh;
     }
 
     .slideLabel {

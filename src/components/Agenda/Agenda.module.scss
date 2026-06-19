@@ -11,6 +11,11 @@
   background:
     linear-gradient(180deg, rgba(15, 23, 42, 0.18), transparent 34%),
     #0c0c0c;
+
+  @media (max-width: 640px) {
+    min-height: auto;
+    padding: 5rem 0.85rem 2.5rem;
+  }
 }
 
 .wrap {
@@ -213,6 +218,13 @@
 
   @media (max-width: 980px) {
     position: static;
+  }
+
+  /* En teléfono se ocultan los widgets auxiliares (resúmenes de solo
+     lectura) para evitar el scroll interminable. Las herramientas reales
+     siguen en las pestañas del panel principal. */
+  @media (max-width: 640px) {
+    display: none;
   }
 
   .previewGrid {

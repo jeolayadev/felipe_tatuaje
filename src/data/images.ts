@@ -98,39 +98,41 @@ export type JapaneseCategory = (typeof JAPANESE_WORKS_HD)[number]['categoria'];
 
 export const PORTFOLIO_IMAGES = JAPANESE_WORKS_HD.slice(0, 6);
 
-/** Hero — una foto de tatuaje por estilo */
+/** Hero — una foto LOCAL por estilo (evita URLs externas que fallan) */
+const gallery = (file: string) => `${BASE}gallery/${file}`;
+
 export const TATTOO_BY_STYLE = {
   Blackwork: {
-    src: unsplash('1562962230-16e4623d36e6'),
-    alt: 'Tatuaje blackwork floral en brazo',
+    src: gallery('2bfc6684e7db2ed26424a3d54836170f.jpg'),
+    alt: 'Tatuaje blackwork',
   },
   Japonés: {
-    src: JAPANESE_WORKS_HD[0].src,
-    alt: JAPANESE_WORKS_HD[0].alt,
+    src: gallery('1.jpg'),
+    alt: 'Tatuaje japonés de dragón en el brazo',
   },
   Realismo: {
-    src: unsplash('1557286581-db06124ae2f'),
-    alt: 'Tatuajes realistas en el cuerpo',
+    src: gallery('3.jpg'),
+    alt: 'Tatuaje realista en el brazo',
   },
   Geométrico: {
-    src: unsplash('1613682719869-662cb221149f'),
-    alt: 'Manga con tatuajes geométricos',
+    src: gallery('4-TOP-4-Tatuajes-en-el-Antebrazo-Girasol-Realista-con-Ramas-Hojas-Pajaros-Golondrinas-en-Negro.jpg'),
+    alt: 'Tatuaje con composición geométrica y floral',
   },
   'Neo-Tradicional': {
-    src: unsplash('1599643478518-3a2cf6ef65b8'),
-    alt: 'Tatuaje neo-tradicional con colores vibrantes',
+    src: gallery('2.jpg'),
+    alt: 'Tatuaje neo-tradicional',
   },
   Minimalista: {
-    src: unsplash('1591362692343-dddde0b65b6e'),
-    alt: 'Tatuaje minimalista en línea fina',
+    src: gallery('4c92b8553bc6c61b2f68658120c95873.jpg'),
+    alt: 'Tatuaje de líneas finas',
   },
   Acuarela: {
-    src: unsplash('1598641926362-b8d2ce1cb881'),
-    alt: 'Tatuaje de acuarela abstracta',
+    src: gallery('ef5726a82b982deed8641f45bad8fe52.webp'),
+    alt: 'Tatuaje estilo acuarela',
   },
   Dotwork: {
-    src: unsplash('1590080876384-b86f473b1d3f'),
-    alt: 'Tatuaje de puntos mandala',
+    src: gallery('Japanese-Dragon-Back-Tattoo-774x960.jpg'),
+    alt: 'Tatuaje de puntillismo en la espalda',
   },
 } as const;
 
