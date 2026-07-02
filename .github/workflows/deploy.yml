@@ -16,6 +16,8 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Margen amplio: la cola de Pages a veces tarda >10 min en procesar.
+    timeout-minutes: 40
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -42,3 +44,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          # 30 min (el default de 10 min se agotó esperando deployment_queued)
+          timeout: 1800000
+          error_count: 30
