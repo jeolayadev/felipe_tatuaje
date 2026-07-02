@@ -10,7 +10,7 @@ import { useIsMobile } from '../../hooks/useMediaQuery';
 import { staggerContainer, staggerItem } from '../../utils/motion';
 import styles from './Portafolio.module.scss';
 
-const filtros = ['Todos', 'Dragón', 'Koi', 'Manga', 'Espalda', 'Irezumi'];
+const filtros = ['Todos', 'Realismo', 'Blackwork', 'Fine Line', 'Tradicional'];
 
 export const Portafolio = () => {
   const [filtro, setFiltro] = useState('Todos');
@@ -38,29 +38,24 @@ export const Portafolio = () => {
     setSelected(item);
   };
 
-  const handleNextImage = () => {
-    if (!selected) return;
-    const currentIndex = PORTFOLIO_IMAGES.findIndex((img) => img.id === selected.id);
-    const nextIndex = (currentIndex + 1) % PORTFOLIO_IMAGES.length;
-    setSelected(PORTFOLIO_IMAGES[nextIndex]);
+  const stepImage = (current: (typeof PORTFOLIO_IMAGES)[number] | null, dir: 1 | -1) => {
+    if (!current) return current;
+    const index = PORTFOLIO_IMAGES.findIndex((img) => img.id === current.id);
+    const next = (index + dir + PORTFOLIO_IMAGES.length) % PORTFOLIO_IMAGES.length;
+    return PORTFOLIO_IMAGES[next];
   };
 
-  const handlePrevImage = () => {
-    if (!selected) return;
-    const currentIndex = PORTFOLIO_IMAGES.findIndex((img) => img.id === selected.id);
-    const prevIndex = currentIndex === 0 ? PORTFOLIO_IMAGES.length - 1 : currentIndex - 1;
-    setSelected(PORTFOLIO_IMAGES[prevIndex]);
-  };
+  const handleNextImage = () => setSelected((current) => stepImage(current, 1));
+  const handlePrevImage = () => setSelected((current) => stepImage(current, -1));
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (!selected) return;
-      if (e.key === 'ArrowRight') handleNextImage();
-      if (e.key === 'ArrowLeft') handlePrevImage();
+      if (e.key === 'ArrowRight') setSelected((current) => stepImage(current, 1));
+      if (e.key === 'ArrowLeft') setSelected((current) => stepImage(current, -1));
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [selected]);
+  }, []);
 
   // Auto-desplazamiento del carrusel de tarjetas en telefono. Se pausa al
   // tocar y mientras el lightbox este abierto, y reinicia al llegar al final.
@@ -104,7 +99,9 @@ export const Portafolio = () => {
       <AmbientBg variant="section" />
 
       <div className={styles.wrap}>
-        <SectionTitle subtitle="Colección irezumi · Full HD">Trabajos japoneses</SectionTitle>
+        <SectionTitle subtitle="Realismo · Blackwork · Fine Line · Tradicional">
+          Trabajos destacados
+        </SectionTitle>
 
         {/* Carrusel 3D decorativo: solo en tablet/escritorio. En teléfono se usa
             el carrusel deslizable de tarjetas para evitar scroll excesivo. */}

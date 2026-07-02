@@ -241,6 +241,9 @@
   border-radius: 8px;
   overflow: hidden;
   aspect-ratio: 4/5;
+  /* En monitores grandes la imagen no crece sin limite: se recorta con
+     object-fit en vez de estirarse/deformarse. */
+  max-height: min(72vh, 680px);
   background: #141414;
   border: 1px solid #27272a;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { BRAND } from '../../utils/constants';
 import { STUDIO_IMAGE } from '../../data/images';
+import { STUDIO_STORY, MILESTONES } from '../../data/studio';
 import { AmbientBg } from '../ui/AmbientBg';
 import { SafeImage } from '../ui/SafeImage';
 import { SectionReveal } from '../ui/SectionReveal';
@@ -16,16 +17,24 @@ export const Contacto = () => {
       <AmbientBg variant="contact" />
 
       <div className={styles.wrap}>
-        <SectionTitle subtitle="Visítanos o reserva tu hora en línea">
-          Contacto
-        </SectionTitle>
+        <SectionTitle subtitle={STUDIO_STORY}>El estudio</SectionTitle>
+
+        <ul className={styles.milestones}>
+          {MILESTONES.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
 
         <div className={styles.grid}>
           <SectionReveal delay={0.1} className={styles.infoCol}>
             <aside className={styles.info}>
               <div>
-                <h3>Horario</h3>
-                <p>Mar–Vie 14:00–21:00 · Sáb 12:00–20:00</p>
+                <h3>Atención</h3>
+                <p>
+                  {BRAND.hours}
+                  <br />
+                  <small>Solo se atiende con reserva anticipada.</small>
+                </p>
               </div>
               <div>
                 <h3>Ubicación</h3>
@@ -37,7 +46,15 @@ export const Contacto = () => {
                   <a href={`tel:${BRAND.phone.replace(/\s/g, '')}`}>{BRAND.phone}</a>
                   <br />
                   <a href={`mailto:${BRAND.email}`}>{BRAND.email}</a>
+                  <br />
+                  <a href={BRAND.instagramUrl} target="_blank" rel="noreferrer">
+                    {BRAND.instagram}
+                  </a>
                 </p>
+              </div>
+              <div>
+                <h3>Artista</h3>
+                <p>{BRAND.artist}</p>
               </div>
               <button type="button" className={styles.cta} onClick={goToAgenda}>
                 Reservar cita

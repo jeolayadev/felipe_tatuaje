@@ -246,6 +246,56 @@
   text-transform: uppercase;
 }
 
+/* Condiciones de reserva — fila compacta; deslizable en telefono */
+.policyStrip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-bottom: 1.4rem;
+
+  @media (max-width: 720px) {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.4rem;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.policyCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid #27272a;
+  border-left: 3px solid #e11d48;
+  border-radius: 6px;
+  background: rgba(17, 17, 17, 0.85);
+
+  strong {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.05rem;
+    letter-spacing: 0.06em;
+    color: #f4f4f5;
+  }
+
+  span {
+    color: #a1a1aa;
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+
+  @media (max-width: 720px) {
+    flex: 0 0 78%;
+    scroll-snap-align: center;
+  }
+}
+
 .artistGrid,
 .clientGrid {
   display: grid;

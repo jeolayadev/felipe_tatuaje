@@ -46,8 +46,8 @@ export const ArtistLogin = ({ onSubmit, onBack }: ArtistLoginProps) => {
 
         <p className={styles.eyebrow}>Panel privado</p>
         <h1 className={styles.brand}>
-          {BRAND.short}
-          <em>INK</em>
+          <em>{BRAND.logoA}</em>
+          {BRAND.logoB}
         </h1>
         <h2 className={styles.title}>Acceso tatuador</h2>
         <p className={styles.lead}>

@@ -8,8 +8,8 @@ import { useCallback, useState } from 'react';
  * se reemplaza por Firebase Authentication (correo/contraseña o Google) con
  * roles y reglas de seguridad en el backend.
  */
-const STORAGE_KEY = 'noir-ink-artist-auth';
-export const ARTIST_PASSCODE = 'noir2026';
+const STORAGE_KEY = 'inkepilef-artist-auth';
+export const ARTIST_PASSCODE = 'inke2026';
 
 export const useArtistAuth = () => {
   const [authed, setAuthed] = useState<boolean>(() => {

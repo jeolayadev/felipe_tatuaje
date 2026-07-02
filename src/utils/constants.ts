@@ -1,11 +1,18 @@
 export const BRAND = {
-  name: 'NOIR INK',
-  short: 'NOIR',
-  tagline: 'Arte llevado a la piel.',
-  taglineSub: 'Cada trazo cuenta una historia que permanece.',
-  email: 'hola@noirink.cl',
-  location: 'Providencia, Santiago',
-  phone: '+56 9 1234 5678',
+  name: 'Inkepilef Tattoo Studio',
+  short: 'INKEPILEF',
+  /* El logo se compone en dos partes: INK (acento rojo) + EPILEF */
+  logoA: 'INK',
+  logoB: 'EPILEF',
+  tagline: 'Cada tatuaje es una obra creada para perdurar.',
+  taglineSub: 'Tu historia, tus ideas y tu identidad — en negro y grises.',
+  email: 'inkepilef.1401@gmail.com',
+  phone: '+56 9 9094 0050',
+  instagram: '@inkepilef',
+  instagramUrl: 'https://instagram.com/inkepilef',
+  artist: 'Felipe Ignacio Reyes V.',
+  location: 'General Las Heras #2323, Maipú, Santiago',
+  hours: 'Horario variable · solo con cita privada',
 };
 
 export const COLORS = {
