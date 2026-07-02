@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import styles from './EmberParticles.module.scss';
 
-const EMBERS = Array.from({ length: 32 }, (_, i) => ({
+const EMBERS = Array.from({ length: 18 }, (_, i) => ({
   id: i,
   left: `${4 + (i * 3.1) % 92}%`,
   size: 2 + (i % 4),

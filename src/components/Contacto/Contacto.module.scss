@@ -30,6 +30,41 @@
   }
 }
 
+/* Hitos del estudio — chips en una fila deslizable, sin sumar alto */
+.milestones {
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0 0 1.6rem;
+  padding: 0 0 0.35rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  li {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #d4d4d8;
+    padding: 0.45rem 0.8rem;
+    border: 1px solid #27272a;
+    border-radius: 999px;
+    background: rgba(20, 20, 20, 0.75);
+
+    &:first-child {
+      border-color: rgba(225, 29, 72, 0.55);
+      color: #fff;
+      background: rgba(225, 29, 72, 0.14);
+    }
+  }
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -87,6 +122,11 @@
     font-size: 0.9rem;
     color: #a1a1aa;
     line-height: 1.6;
+  }
+
+  small {
+    color: #71717a;
+    font-size: 0.78rem;
   }
 
   a {

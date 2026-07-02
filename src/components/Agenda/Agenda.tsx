@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { motion } from 'framer-motion';
 import { BRAND } from '../../utils/constants';
+import { BOOKING_POLICY } from '../../data/studio';
 import { EASE } from '../../utils/motion';
 import { ClientCard } from '../ui/ClientCard';
 import { DashboardMetrics } from '../ui/DashboardMetrics';
@@ -80,8 +81,8 @@ type AgendaProps = {
   onLogout?: () => void;
 };
 
-const SCHEDULE_STORAGE_KEY = 'noir-ink-schedule-v1';
-const BOOKINGS_STORAGE_KEY = 'noir-ink-bookings-v1';
+const SCHEDULE_STORAGE_KEY = 'inkepilef-schedule-v1';
+const BOOKINGS_STORAGE_KEY = 'inkepilef-bookings-v1';
 
 const WEEKDAYS: Array<{ key: WeekdayKey; label: string; short: string; jsDay: number }> = [
   { key: 'monday', label: 'Lunes', short: 'Lun', jsDay: 1 },
@@ -937,8 +938,17 @@ const ClientAgenda = ({ schedule, bookings, setBookings, dates }: ClientAgendaPr
         >
           <p className={styles.eyebrow}>Vista cliente</p>
           <h2>Agenda tu hora</h2>
-          <p>{BRAND.location} - cupos segun disponibilidad del tatuador.</p>
+          <p>{BRAND.location} · cupos según disponibilidad del tatuador.</p>
         </motion.header>
+
+        <div className={styles.policyStrip}>
+          {BOOKING_POLICY.map((item) => (
+            <article key={item.title} className={styles.policyCard}>
+              <strong>{item.title}</strong>
+              <span>{item.detail}</span>
+            </article>
+          ))}
+        </div>
 
         <div className={styles.clientGrid}>
           <motion.div

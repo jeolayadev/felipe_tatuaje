@@ -9,15 +9,15 @@ interface AmbientBgProps {
   variant?: Variant;
 }
 
+/* Menos nodos animados por seccion = navegacion fluida en monitores grandes
+   (cada motivo es una animacion infinita con drop-shadow, y la pagina monta
+   varias instancias de este fondo a la vez). */
 const MOTIFS = [
   { type: 'skull' as const, top: '6%', left: '4%', size: 64, duration: 12, delay: 0 },
   { type: 'cross' as const, top: '15%', left: '90%', size: 52, duration: 14, delay: 0.5 },
   { type: 'cross' as const, top: '70%', left: '2%', size: 46, duration: 13, delay: 1 },
   { type: 'skull' as const, top: '62%', left: '85%', size: 58, duration: 16, delay: 0.3 },
-  { type: 'skull' as const, top: '38%', left: '94%', size: 40, duration: 18, delay: 2 },
   { type: 'cross' as const, top: '88%', left: '42%', size: 44, duration: 15, delay: 1.2 },
-  { type: 'skull' as const, top: '28%', left: '12%', size: 36, duration: 17, delay: 2.5 },
-  { type: 'cross' as const, top: '48%', left: '78%', size: 38, duration: 19, delay: 0.8 },
 ];
 
 const SkullSvg = ({ size }: { size: number }) => (
@@ -110,7 +110,9 @@ export const AmbientBg = ({ variant = 'section' }: AmbientBgProps) => {
       animate={{ opacity: [0.4, 0.75, 0.4], scale: [1, 1.15, 1] }}
       transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
     />
-    <EmberParticles />
+    {/* Las brasas solo en el hero: multiplicarlas por cada seccion generaba
+        docenas de animaciones simultaneas en escritorio. */}
+    {variant === 'hero' && <EmberParticles />}
 
     {MOTIFS.map((m, i) => (
       <motion.div

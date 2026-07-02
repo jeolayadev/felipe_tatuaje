@@ -9,6 +9,7 @@ const CLIENT_NAV = [
   { id: 'inicio', label: 'Inicio' },
   { id: 'portafolio', label: 'Trabajos' },
   { id: 'agenda-clientes', label: 'Agenda' },
+  { id: 'cuidados', label: 'Cuidados' },
   { id: 'contacto', label: 'Contacto' },
 ];
 
@@ -48,8 +49,11 @@ export const Navbar = ({ viewMode, onToggleView }: NavbarProps) => {
       <div className={styles.bar}>
         <button type="button" className={styles.logo} onClick={goHome}>
           <span className={styles.logoMark} />
-          <span className={styles.logoText}>{BRAND.short}</span>
-          <span className={styles.logoTag}>INK</span>
+          <span className={styles.logoText}>
+            <em className={styles.logoAccent}>{BRAND.logoA}</em>
+            {BRAND.logoB}
+          </span>
+          <span className={styles.logoTag}>TATTOO</span>
         </button>
 
         <div className={styles.datetime} aria-live="polite">

@@ -3,6 +3,7 @@ import { Navbar } from './components/Navbar/Navbar'
 import { Hero } from './components/Hero/Hero'
 import { Portafolio } from './components/Portafolio/Portafolio'
 import { Agenda, type ViewMode } from './components/Agenda/Agenda'
+import { Cuidados } from './components/Cuidados/Cuidados'
 import { Contacto } from './components/Contacto/Contacto'
 import { Footer } from './components/Footer/Footer'
 import { ArtistLogin } from './components/Auth/ArtistLogin'
@@ -46,6 +47,7 @@ function App() {
           <Hero />
           <Portafolio />
           <Agenda viewMode={viewMode} />
+          <Cuidados />
           <Contacto />
         </>
       ) : authed ? (

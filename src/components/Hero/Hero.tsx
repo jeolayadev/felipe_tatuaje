@@ -56,12 +56,12 @@ export const Hero = () => {
           transition={{ duration: 0.6, ease: EASE }}
         >
           <RevealLine className={styles.eyebrow} delay={0.1}>
-            Estudio · Santiago
+            Tattoo Studio · Maipú, Santiago
           </RevealLine>
 
           <h1 className={styles.title}>
-            <SplitText text={BRAND.short} delay={0.2} className={styles.titleMain} />
-            <SplitText text=" INK" delay={0.55} className={styles.titleAccent} />
+            <SplitText text={BRAND.logoA} delay={0.2} className={styles.titleAccent} />
+            <SplitText text={BRAND.logoB} delay={0.45} className={styles.titleMain} />
           </h1>
 
           <GlowText className={styles.tagline} delay={0.75}>
