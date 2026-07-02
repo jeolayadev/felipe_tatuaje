@@ -36,15 +36,21 @@ jobs:
       - name: Build
         run: npm run build
 
+      # Nombre único por intento: al re-ejecutar un run, GitHub conserva el
+      # artefacto anterior y deploy-pages aborta si encuentra dos con el mismo
+      # nombre ("Multiple artifacts named github-pages"). Con el sufijo
+      # run_attempt cada intento publica su propio artefacto sin chocar.
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
+          name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
         with:
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
           # 30 min (el default de 10 min se agotó esperando deployment_queued)
           timeout: 1800000
           error_count: 30
