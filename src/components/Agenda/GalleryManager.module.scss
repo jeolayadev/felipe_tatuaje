@@ -381,6 +381,49 @@
   }
 }
 
+.heroSection {
+  margin-top: 1.6rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid #27272a;
+}
+
+.subTitle {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: 0.05em;
+  color: #f4f4f5;
+  margin: 0 0 0.2rem;
+}
+
+.subDesc {
+  color: #a1a1aa;
+  font-size: 0.82rem;
+  margin: 0 0 0.9rem;
+}
+
+.changeBtn {
+  display: inline-flex;
+  align-items: center;
+  background: #18181b;
+  border: 1px solid #3f3f46;
+  color: #d4d4d8;
+  border-radius: 5px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+
+  &:hover {
+    border-color: #e11d48;
+    color: #fff;
+  }
+
+  input {
+    display: none;
+  }
+}
+
 .note {
   margin-top: 1.1rem;
   padding-top: 0.9rem;

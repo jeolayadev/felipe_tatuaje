@@ -296,6 +296,66 @@
   }
 }
 
+/* Abono + botón de pago Mercado Pago (agenda cliente) */
+.abonoBox {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #27272a;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.abonoText {
+  color: #a1a1aa;
+  font-size: 0.86rem;
+  line-height: 1.5;
+
+  strong {
+    color: #f4f4f5;
+  }
+}
+
+.mpButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  align-self: flex-start;
+  background: #009ee3;
+  color: #fff;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+  padding: 0.75rem 1.25rem;
+  box-shadow: 0 6px 22px rgba(0, 158, 227, 0.35);
+  transition: background 0.2s, transform 0.15s;
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  &:hover {
+    background: #00b1ff;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  @media (max-width: 560px) {
+    align-self: stretch;
+  }
+}
+
+.abonoNote {
+  color: #71717a;
+  font-size: 0.82rem;
+  font-style: italic;
+}
+
 .artistGrid,
 .clientGrid {
   display: grid;

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { PORTFOLIO_WORKS } from '../data/images';
+import { PORTFOLIO_WORKS, HERO_IMAGES } from '../data/images';
 
 /**
  * Galería administrable por el tatuador (beta).
@@ -16,8 +16,16 @@ export type GalleryImage = {
   alt?: string;
 };
 
+export type HeroImage = {
+  id: string;
+  estilo: string;
+  src: string;
+  alt?: string;
+};
+
 export type GalleryState = {
   images: GalleryImage[];
+  hero: HeroImage[];
   carouselCount: number;
   autoplayMs: number;
 };
@@ -32,6 +40,12 @@ const DEFAULT_STATE: GalleryState = {
     titulo: w.titulo,
     categoria: w.categoria,
     alt: w.alt,
+  })),
+  hero: HERO_IMAGES.map((h, i) => ({
+    id: `hero-${i}`,
+    estilo: h.estilo,
+    src: h.src,
+    alt: h.alt,
   })),
   carouselCount: 6,
   autoplayMs: 5000,
@@ -51,6 +65,7 @@ const readState = (): GalleryState => {
     }
     return {
       images: parsed.images,
+      hero: Array.isArray(parsed.hero) && parsed.hero.length ? parsed.hero : DEFAULT_STATE.hero,
       carouselCount: clampCount(parsed.carouselCount ?? 6, parsed.images.length),
       autoplayMs: Math.max(1500, Math.min(parsed.autoplayMs ?? 5000, 12000)),
     };
@@ -161,6 +176,49 @@ export const useGallery = () => {
     [commit]
   );
 
+  /* ---- Imágenes del Hero (una por estilo) ---- */
+  const addHero = useCallback(
+    (h: Omit<HeroImage, 'id'>): boolean => {
+      const prev = stateRef.current;
+      return commit({ ...prev, hero: [...prev.hero, { ...h, id: uid() }] });
+    },
+    [commit]
+  );
+
+  const updateHero = useCallback(
+    (id: string, patch: Partial<Omit<HeroImage, 'id'>>): boolean => {
+      const prev = stateRef.current;
+      return commit({
+        ...prev,
+        hero: prev.hero.map((it) => (it.id === id ? { ...it, ...patch } : it)),
+      });
+    },
+    [commit]
+  );
+
+  const removeHero = useCallback(
+    (id: string): boolean => {
+      const prev = stateRef.current;
+      const hero = prev.hero.filter((it) => it.id !== id);
+      if (hero.length === 0) return false;
+      return commit({ ...prev, hero });
+    },
+    [commit]
+  );
+
+  const moveHero = useCallback(
+    (id: string, dir: -1 | 1): boolean => {
+      const prev = stateRef.current;
+      const idx = prev.hero.findIndex((it) => it.id === id);
+      const target = idx + dir;
+      if (idx < 0 || target < 0 || target >= prev.hero.length) return false;
+      const hero = [...prev.hero];
+      [hero[idx], hero[target]] = [hero[target], hero[idx]];
+      return commit({ ...prev, hero });
+    },
+    [commit]
+  );
+
   const resetGallery = useCallback((): boolean => commit(DEFAULT_STATE), [commit]);
 
   return {
@@ -171,6 +229,10 @@ export const useGallery = () => {
     moveImage,
     setCarouselCount,
     setAutoplayMs,
+    addHero,
+    updateHero,
+    removeHero,
+    moveHero,
     resetGallery,
   };
 };
