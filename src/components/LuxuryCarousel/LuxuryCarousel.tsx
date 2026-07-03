@@ -12,14 +12,30 @@ interface CardState {
   zIndex: number;
 }
 
-export const LuxuryCarousel = () => {
+type CarouselImage = {
+  id: string | number;
+  src: string;
+  alt?: string;
+  titulo: string;
+  categoria: string;
+};
+
+interface LuxuryCarouselProps {
+  images?: readonly CarouselImage[];
+  autoplayMs?: number;
+}
+
+export const LuxuryCarousel = ({ images: imagesProp, autoplayMs = 5000 }: LuxuryCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const [hoveredId, setHoveredId] = useState<string | number | null>(null);
   const carouselRef = useRef(null);
   const inView = useInView(carouselRef, { once: true, margin: '-40px' });
 
-  const images = useMemo(() => PORTFOLIO_IMAGES.slice(0, 6), []);
+  const images = useMemo(
+    () => (imagesProp && imagesProp.length ? imagesProp : PORTFOLIO_IMAGES).slice(0, 8),
+    [imagesProp]
+  );
 
   const handleNext = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % images.length);
@@ -31,12 +47,16 @@ export const LuxuryCarousel = () => {
 
   useEffect(() => {
     if (!autoPlay) return;
-    const timer = setTimeout(handleNext, 5000);
+    const timer = setTimeout(handleNext, autoplayMs);
     return () => clearTimeout(timer);
-  }, [currentIndex, autoPlay, handleNext]);
+  }, [currentIndex, autoPlay, handleNext, autoplayMs]);
+
+  // Índice seguro: si cambia la cantidad de imágenes (config del tatuador),
+  // se normaliza con módulo en el render en vez de con setState en un efecto.
+  const activeIndex = images.length ? ((currentIndex % images.length) + images.length) % images.length : 0;
 
   const getCardState = (index: number): CardState => {
-    const relative = (index - currentIndex + images.length) % images.length;
+    const relative = (index - activeIndex + images.length) % images.length;
 
     if (relative === 0) {
       return { position: 'center', opacity: 1, scale: 1, x: 0, rotateY: 0, zIndex: 30 };
@@ -120,7 +140,7 @@ export const LuxuryCarousel = () => {
                     <div className={styles.imageWrapper}>
                       <img
                         src={image.src}
-                        alt={image.alt}
+                        alt={image.alt || image.titulo}
                         loading="lazy"
                         className={styles.image}
                       />
@@ -177,7 +197,7 @@ export const LuxuryCarousel = () => {
             {images.map((_, index) => (
               <motion.button
                 key={`dot-${index}`}
-                className={`${styles.dot} ${index === currentIndex ? styles.dotActive : ''}`}
+                className={`${styles.dot} ${index === activeIndex ? styles.dotActive : ''}`}
                 onClick={() => handleDotClick(index)}
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.9 }}
@@ -210,7 +230,7 @@ export const LuxuryCarousel = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          <span>{currentIndex + 1}</span>
+          <span>{activeIndex + 1}</span>
           <span>/</span>
           <span>{images.length}</span>
         </motion.div>

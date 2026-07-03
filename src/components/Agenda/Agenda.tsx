@@ -7,6 +7,7 @@ import { ClientCard } from '../ui/ClientCard';
 import { DashboardMetrics } from '../ui/DashboardMetrics';
 import { ReminderPanel } from '../ui/ReminderPanel';
 import { IconCalendar, IconClock, IconClients, IconNeedle } from '../ui/icons/MetricIcons';
+import { GalleryManager } from './GalleryManager';
 import styles from './Agenda.module.scss';
 
 export type ViewMode = 'cliente' | 'tatuador';
@@ -53,7 +54,7 @@ type TimeSlot = {
   status: SlotStatus;
 };
 
-type ArtistPanel = 'gobernar' | 'gestionar' | 'reservas' | 'usuarios';
+type ArtistPanel = 'gobernar' | 'galeria' | 'gestionar' | 'reservas' | 'usuarios';
 
 type ClientSummary = {
   name: string;
@@ -225,6 +226,7 @@ const getBookingTimestamp = (booking: Booking) =>
 
 const ARTIST_ACTIONS: Array<{ panel: ArtistPanel; label: string; detail: string }> = [
   { panel: 'gobernar', label: 'Gobernar agenda', detail: 'Horarios y cierres' },
+  { panel: 'galeria', label: 'Galería', detail: 'Fotos y carrusel' },
   { panel: 'gestionar', label: 'Gestionar reservas', detail: 'Acciones rapidas' },
   { panel: 'reservas', label: 'Ver reservas', detail: 'Listado completo' },
   { panel: 'usuarios', label: 'Ver usuarios', detail: 'Clientes agendados' },
@@ -659,6 +661,8 @@ const ArtistAgenda = ({ schedule, setSchedule, bookings, setBookings, dates, onL
                 </button>
               </form>
             )}
+
+            {activePanel === 'galeria' && <GalleryManager />}
 
             {activePanel === 'gestionar' && (
               <section className={styles.panelCard}>

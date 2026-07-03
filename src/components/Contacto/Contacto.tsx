@@ -73,6 +73,27 @@ export const Contacto = () => {
             </motion.div>
           </SectionReveal>
         </div>
+
+        <SectionReveal delay={0.15}>
+          <div className={styles.mapBlock}>
+            <div className={styles.mapHead}>
+              <h3>Cómo llegar</h3>
+              <p>{BRAND.location}</p>
+            </div>
+            <div className={styles.mapEmbed}>
+              <iframe
+                title="Ubicación de Inkepilef Tattoo Studio"
+                src="https://maps.google.com/maps?q=General%20Las%20Heras%202323%2C%20Maip%C3%BA%2C%20Santiago%2C%20Chile&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
+            <p className={styles.mapNote}>
+              La dirección exacta se confirma al agendar tu cita con abono.
+            </p>
+          </div>
+        </SectionReveal>
       </div>
     </section>
   );

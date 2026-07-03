@@ -1,16 +1,14 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
-import { PORTFOLIO_IMAGES } from '../../data/images';
 import { AmbientBg } from '../ui/AmbientBg';
 import { SafeImage } from '../ui/SafeImage';
 import { SectionReveal } from '../ui/SectionReveal';
 import { SectionTitle } from '../ui/AnimatedText';
 import { LuxuryCarousel } from '../LuxuryCarousel/LuxuryCarousel';
 import { useIsMobile } from '../../hooks/useMediaQuery';
+import { useGallery, type GalleryImage } from '../../hooks/useGallery';
 import { staggerContainer, staggerItem } from '../../utils/motion';
 import styles from './Portafolio.module.scss';
-
-const filtros = ['Todos', 'Realismo', 'Blackwork', 'Fine Line', 'Tradicional'];
 
 export const Portafolio = () => {
   const [filtro, setFiltro] = useState('Todos');
@@ -18,13 +16,15 @@ export const Portafolio = () => {
   const gridInView = useInView(gridRef, { once: true, margin: '-40px' });
   const isMobile = useIsMobile();
 
-  const lista =
-    filtro === 'Todos'
-      ? PORTFOLIO_IMAGES
-      : PORTFOLIO_IMAGES.filter((t) => t.categoria === filtro);
+  // Galería administrable por el tatuador (imágenes + ajustes del carrusel).
+  const { images, carouselCount, autoplayMs } = useGallery();
+  const active = images.slice(0, carouselCount);
+  const filtros = ['Todos', ...Array.from(new Set(active.map((i) => i.categoria)))];
 
-  const [selected, setSelected] = useState<(typeof PORTFOLIO_IMAGES)[number] | null>(null);
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const lista = filtro === 'Todos' ? active : active.filter((t) => t.categoria === filtro);
+
+  const [selected, setSelected] = useState<GalleryImage | null>(null);
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -34,16 +34,19 @@ export const Portafolio = () => {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  const handleCardClick = (item: typeof PORTFOLIO_IMAGES[number]) => {
+  const handleCardClick = (item: GalleryImage) => {
     setSelected(item);
   };
 
-  const stepImage = (current: (typeof PORTFOLIO_IMAGES)[number] | null, dir: 1 | -1) => {
-    if (!current) return current;
-    const index = PORTFOLIO_IMAGES.findIndex((img) => img.id === current.id);
-    const next = (index + dir + PORTFOLIO_IMAGES.length) % PORTFOLIO_IMAGES.length;
-    return PORTFOLIO_IMAGES[next];
-  };
+  const stepImage = useCallback(
+    (current: GalleryImage | null, dir: 1 | -1) => {
+      if (!current || active.length === 0) return current;
+      const index = active.findIndex((img) => img.id === current.id);
+      const next = (index + dir + active.length) % active.length;
+      return active[next];
+    },
+    [active]
+  );
 
   const handleNextImage = () => setSelected((current) => stepImage(current, 1));
   const handlePrevImage = () => setSelected((current) => stepImage(current, -1));
@@ -55,7 +58,7 @@ export const Portafolio = () => {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [stepImage]);
 
   // Auto-desplazamiento del carrusel de tarjetas en telefono. Se pausa al
   // tocar y mientras el lightbox este abierto, y reinicia al llegar al final.
@@ -84,7 +87,7 @@ export const Portafolio = () => {
       } else {
         el.scrollBy({ left: step, behavior: 'smooth' });
       }
-    }, 3500);
+    }, autoplayMs);
 
     return () => {
       clearInterval(id);
@@ -92,7 +95,7 @@ export const Portafolio = () => {
       el.removeEventListener('touchstart', pause);
       el.removeEventListener('pointerdown', pause);
     };
-  }, [isMobile, selected, filtro]);
+  }, [isMobile, selected, filtro, autoplayMs]);
 
   return (
     <section id="portafolio" className={styles.section}>
@@ -106,7 +109,7 @@ export const Portafolio = () => {
         {/* Carrusel 3D decorativo: solo en tablet/escritorio. En teléfono se usa
             el carrusel deslizable de tarjetas para evitar scroll excesivo. */}
         <div className={styles.luxuryWrap}>
-          <LuxuryCarousel />
+          <LuxuryCarousel images={active} autoplayMs={autoplayMs} />
         </div>
 
         <SectionReveal delay={0.1}>
@@ -164,7 +167,7 @@ export const Portafolio = () => {
                   onClick={() => handleCardClick(t)}
                   onKeyDown={(e) => { if (e.key === 'Enter') handleCardClick(t); }}
                 >
-                  <SafeImage src={t.src} alt={t.alt} />
+                  <SafeImage src={t.src} alt={t.alt || t.titulo} />
                   <motion.div
                     className={styles.imgOverlay}
                     initial={{ opacity: 0 }}
@@ -199,7 +202,7 @@ export const Portafolio = () => {
                 transition={{ duration: 0.25, type: 'spring', stiffness: 300, damping: 25 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <SafeImage src={selected.src} alt={selected.alt} loading="eager" />
+                <SafeImage src={selected.src} alt={selected.alt || selected.titulo} loading="eager" />
                 
                 {/* Navigation buttons */}
                 <motion.button
