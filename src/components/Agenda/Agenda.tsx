@@ -8,6 +8,8 @@ import { DashboardMetrics } from '../ui/DashboardMetrics';
 import { ReminderPanel } from '../ui/ReminderPanel';
 import { IconCalendar, IconClock, IconClients, IconNeedle } from '../ui/icons/MetricIcons';
 import { GalleryManager } from './GalleryManager';
+import { PaymentSettings } from './PaymentSettings';
+import { useStudioConfig, formatCLP } from '../../hooks/useStudioConfig';
 import styles from './Agenda.module.scss';
 
 export type ViewMode = 'cliente' | 'tatuador';
@@ -54,7 +56,7 @@ type TimeSlot = {
   status: SlotStatus;
 };
 
-type ArtistPanel = 'gobernar' | 'galeria' | 'gestionar' | 'reservas' | 'usuarios';
+type ArtistPanel = 'gobernar' | 'galeria' | 'pagos' | 'gestionar' | 'reservas' | 'usuarios';
 
 type ClientSummary = {
   name: string;
@@ -227,6 +229,7 @@ const getBookingTimestamp = (booking: Booking) =>
 const ARTIST_ACTIONS: Array<{ panel: ArtistPanel; label: string; detail: string }> = [
   { panel: 'gobernar', label: 'Gobernar agenda', detail: 'Horarios y cierres' },
   { panel: 'galeria', label: 'Galería', detail: 'Fotos y carrusel' },
+  { panel: 'pagos', label: 'Pagos', detail: 'Abono Mercado Pago' },
   { panel: 'gestionar', label: 'Gestionar reservas', detail: 'Acciones rapidas' },
   { panel: 'reservas', label: 'Ver reservas', detail: 'Listado completo' },
   { panel: 'usuarios', label: 'Ver usuarios', detail: 'Clientes agendados' },
@@ -664,6 +667,8 @@ const ArtistAgenda = ({ schedule, setSchedule, bookings, setBookings, dates, onL
 
             {activePanel === 'galeria' && <GalleryManager />}
 
+            {activePanel === 'pagos' && <PaymentSettings />}
+
             {activePanel === 'gestionar' && (
               <section className={styles.panelCard}>
                 <div className={styles.panelHeader}>
@@ -882,6 +887,7 @@ const ClientAgenda = ({ schedule, bookings, setBookings, dates }: ClientAgendaPr
   const [selectedSlot, setSelectedSlot] = useState('');
   const [bookingForm, setBookingForm] = useState(BOOKING_INITIAL);
   const [success, setSuccess] = useState('');
+  const { mpLink, abonoAmount } = useStudioConfig();
 
   const selectedSlots = useMemo(
     () => getSlotsForDate(selectedDate, schedule, bookings),
@@ -1110,6 +1116,23 @@ const ClientAgenda = ({ schedule, bookings, setBookings, dates }: ClientAgendaPr
               </button>
               <div className={styles.success} aria-live="polite">
                 {success}
+              </div>
+
+              <div className={styles.abonoBox}>
+                <p className={styles.abonoText}>
+                  Tu hora se confirma con un abono de <strong>{formatCLP(abonoAmount)}</strong>, que se descuenta del valor total del tatuaje.
+                </p>
+                {mpLink ? (
+                  <a className={styles.mpButton} href={mpLink} target="_blank" rel="noreferrer">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path d="M4 8.5C4 7 5.2 6 6.8 6.3l11 2c1.4.25 2.2 1 2.2 2.2 0 1.4-1 2.2-2.6 2l-4.4-.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                      <path d="M20 14.5c0 1.6-1.2 2.6-2.8 2.3l-11-2C4.8 14.55 4 13.8 4 12.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                    </svg>
+                    Pagar abono con Mercado Pago
+                  </a>
+                ) : (
+                  <span className={styles.abonoNote}>Coordina el pago del abono al escribir por WhatsApp.</span>
+                )}
               </div>
             </form>
           </motion.div>

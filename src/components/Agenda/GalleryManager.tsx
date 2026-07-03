@@ -10,6 +10,7 @@ import styles from './GalleryManager.module.scss';
 export const GalleryManager = () => {
   const {
     images,
+    hero,
     carouselCount,
     autoplayMs,
     addImage,
@@ -18,6 +19,10 @@ export const GalleryManager = () => {
     moveImage,
     setCarouselCount,
     setAutoplayMs,
+    addHero,
+    updateHero,
+    removeHero,
+    moveHero,
     resetGallery,
   } = useGallery();
 
@@ -31,7 +36,69 @@ export const GalleryManager = () => {
   const [editTitulo, setEditTitulo] = useState('');
   const [editCategoria, setEditCategoria] = useState('');
 
+  // Hero
+  const [heroEditId, setHeroEditId] = useState<string | null>(null);
+  const [heroEstilo, setHeroEstilo] = useState('');
+  const [newHeroSrc, setNewHeroSrc] = useState('');
+  const [newHeroEstilo, setNewHeroEstilo] = useState('');
+  const [heroBusy, setHeroBusy] = useState(false);
+
   const categorias = Array.from(new Set(images.map((i) => i.categoria)));
+
+  const onHeroFile = async (id: string, e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setHeroBusy(true);
+    try {
+      const src = await fileToDataUrl(file);
+      const ok = updateHero(id, { src });
+      setMsg(ok ? 'Foto del hero actualizada.' : 'No queda espacio en el navegador (beta).');
+    } catch {
+      setMsg('No se pudo procesar la imagen.');
+    } finally {
+      setHeroBusy(false);
+      e.target.value = '';
+    }
+  };
+
+  const onNewHeroFile = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setHeroBusy(true);
+    try {
+      const src = await fileToDataUrl(file);
+      setNewHeroSrc(src);
+    } catch {
+      setMsg('No se pudo procesar la imagen.');
+    } finally {
+      setHeroBusy(false);
+      e.target.value = '';
+    }
+  };
+
+  const addHeroImg = () => {
+    if (!newHeroSrc) {
+      setMsg('Primero sube una foto para el hero.');
+      return;
+    }
+    const estilo = newHeroEstilo.trim() || 'Estilo';
+    const ok = addHero({ estilo, src: newHeroSrc, alt: estilo });
+    if (!ok) {
+      setMsg('No queda espacio en el navegador (beta).');
+      return;
+    }
+    setNewHeroSrc('');
+    setNewHeroEstilo('');
+    setMsg('Estilo agregado al hero.');
+  };
+
+  const saveHeroEdit = () => {
+    if (!heroEditId) return;
+    const estilo = heroEstilo.trim() || 'Estilo';
+    updateHero(heroEditId, { estilo, alt: estilo });
+    setHeroEditId(null);
+    setMsg('Nombre del estilo actualizado.');
+  };
 
   const onFile = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -209,6 +276,66 @@ export const GalleryManager = () => {
             </article>
           );
         })}
+      </div>
+
+      {/* ---- Imágenes del Hero (portada) ---- */}
+      <div className={styles.heroSection}>
+        <h4 className={styles.subTitle}>Portada (Hero)</h4>
+        <p className={styles.subDesc}>Una foto por estilo. Aparecen en el carrusel principal y en las miniaturas del inicio.</p>
+
+        <div className={styles.list}>
+          {hero.map((h, i) => {
+            const editing = heroEditId === h.id;
+            return (
+              <article key={h.id} className={styles.item}>
+                <img className={styles.thumb} src={h.src} alt={h.alt || h.estilo} />
+                {editing ? (
+                  <div className={styles.itemEdit}>
+                    <input type="text" value={heroEstilo} onChange={(e) => setHeroEstilo(e.target.value)} maxLength={24} placeholder="Nombre del estilo" />
+                  </div>
+                ) : (
+                  <div className={styles.itemInfo}>
+                    <strong>{h.estilo}</strong>
+                    <span>Estilo del hero</span>
+                  </div>
+                )}
+                <div className={styles.itemActions}>
+                  <button type="button" onClick={() => moveHero(h.id, -1)} disabled={i === 0} title="Subir">↑</button>
+                  <button type="button" onClick={() => moveHero(h.id, 1)} disabled={i === hero.length - 1} title="Bajar">↓</button>
+                  <label className={styles.changeBtn}>
+                    {heroBusy ? '…' : 'Cambiar foto'}
+                    <input type="file" accept="image/*" onChange={(e) => onHeroFile(h.id, e)} disabled={heroBusy} />
+                  </label>
+                  {editing ? (
+                    <>
+                      <button type="button" className={styles.save} onClick={saveHeroEdit}>Guardar</button>
+                      <button type="button" onClick={() => setHeroEditId(null)}>Cancelar</button>
+                    </>
+                  ) : (
+                    <>
+                      <button type="button" onClick={() => { setHeroEditId(h.id); setHeroEstilo(h.estilo); setMsg(''); }}>Renombrar</button>
+                      <button type="button" className={styles.del} onClick={() => { if (!removeHero(h.id)) setMsg('Debe quedar al menos un estilo en el hero.'); }}>Eliminar</button>
+                    </>
+                  )}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        <div className={styles.addBox}>
+          <div className={styles.addPreview}>
+            {newHeroSrc ? <img src={newHeroSrc} alt="Vista previa" /> : <span>{heroBusy ? 'Procesando…' : 'Sin foto'}</span>}
+          </div>
+          <div className={styles.addFields}>
+            <label className={styles.fileLabel}>
+              {heroBusy ? 'Procesando…' : 'Subir foto del hero'}
+              <input type="file" accept="image/*" onChange={onNewHeroFile} disabled={heroBusy} />
+            </label>
+            <input type="text" placeholder="Nombre del estilo (ej: Realismo)" value={newHeroEstilo} onChange={(e) => setNewHeroEstilo(e.target.value)} maxLength={24} />
+            <button type="button" className={styles.addBtn} onClick={addHeroImg} disabled={!newHeroSrc}>Agregar estilo</button>
+          </div>
+        </div>
       </div>
 
       <p className={styles.note}>

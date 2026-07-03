@@ -1,48 +1,50 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BRAND } from '../../utils/constants';
-import { HERO_IMAGES, type TattooStyle } from '../../data/images';
 import { AmbientBg } from '../ui/AmbientBg';
 import { SafeImage } from '../ui/SafeImage';
 import { SplitText, RevealLine, GlowText } from '../ui/AnimatedText';
+import { useGallery } from '../../hooks/useGallery';
 import { EASE } from '../../utils/motion';
 import styles from './Hero.module.scss';
 
-const ESTILOS = HERO_IMAGES.map((img) => img.estilo);
-
 export const Hero = () => {
+  const { hero } = useGallery();
   const [active, setActive] = useState(0);
   const thumbsRef = useRef<HTMLDivElement>(null);
 
+  const heroLen = hero.length;
+  const safeActive = heroLen ? active % heroLen : 0;
+  const ESTILOS = hero.map((img) => img.estilo);
+
   useEffect(() => {
-    const timer = setInterval(
-      () => setActive((i) => (i + 1) % HERO_IMAGES.length),
-      4500
-    );
+    if (heroLen <= 1) return;
+    const timer = setInterval(() => setActive((i) => (i + 1) % heroLen), 4500);
     return () => clearInterval(timer);
-  }, []);
+  }, [heroLen]);
 
   // En telefono la tira de miniaturas sigue a la imagen activa.
   useEffect(() => {
     const strip = thumbsRef.current;
-    const el = strip?.children[active] as HTMLElement | undefined;
+    const el = strip?.children[safeActive] as HTMLElement | undefined;
     if (strip && el) {
       strip.scrollTo({
         left: el.offsetLeft - strip.clientWidth / 2 + el.clientWidth / 2,
         behavior: 'smooth',
       });
     }
-  }, [active]);
+  }, [safeActive]);
 
   const go = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
-  const selectStyle = (estilo: TattooStyle) => {
-    const index = HERO_IMAGES.findIndex((img) => img.estilo === estilo);
+  const selectStyle = (estilo: string) => {
+    const index = hero.findIndex((img) => img.estilo === estilo);
     if (index >= 0) setActive(index);
   };
 
-  const current = HERO_IMAGES[active];
+  const current = hero[safeActive];
+  if (!current) return null;
 
   return (
     <section id="inicio" className={styles.hero}>
@@ -134,7 +136,7 @@ export const Hero = () => {
             <span className={styles.slideLabel}>{current.estilo}</span>
             <AnimatePresence mode="wait">
               <motion.div
-                key={active}
+                key={safeActive}
                 className={styles.slide}
                 initial={{ opacity: 0, scale: 1.04, filter: 'blur(6px)' }}
                 animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
@@ -143,7 +145,7 @@ export const Hero = () => {
               >
                 <SafeImage
                   src={current.src}
-                  alt={current.alt}
+                  alt={current.alt || current.estilo}
                   loading="eager"
                   className={styles.slideImg}
                 />
@@ -159,17 +161,17 @@ export const Hero = () => {
           </div>
 
           <div className={styles.thumbs} ref={thumbsRef}>
-            {HERO_IMAGES.map((img, i) => (
+            {hero.map((img, i) => (
               <motion.button
-                key={img.estilo}
+                key={img.id}
                 type="button"
-                className={`${styles.thumb} ${i === active ? styles.thumbActive : ''}`}
+                className={`${styles.thumb} ${i === safeActive ? styles.thumbActive : ''}`}
                 onClick={() => setActive(i)}
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
-                aria-label={`${img.estilo}: ${img.alt}`}
+                aria-label={`${img.estilo}: ${img.alt || img.estilo}`}
               >
-                <SafeImage src={img.src} alt={img.alt} loading="eager" />
+                <SafeImage src={img.src} alt={img.alt || img.estilo} loading="eager" />
                 <span className={styles.thumbTag}>{img.estilo}</span>
               </motion.button>
             ))}

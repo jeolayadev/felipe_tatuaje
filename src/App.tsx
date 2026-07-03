@@ -6,6 +6,7 @@ import { Agenda, type ViewMode } from './components/Agenda/Agenda'
 import { Cuidados } from './components/Cuidados/Cuidados'
 import { Contacto } from './components/Contacto/Contacto'
 import { Footer } from './components/Footer/Footer'
+import { FloatingContact } from './components/ui/FloatingContact'
 import { ArtistLogin } from './components/Auth/ArtistLogin'
 import { useArtistAuth } from './hooks/useArtistAuth'
 import './App.css'
@@ -56,6 +57,7 @@ function App() {
         <ArtistLogin onSubmit={login} onBack={goToClient} />
       )}
       <Footer />
+      {viewMode === 'cliente' && <FloatingContact />}
     </div>
   )
 }
