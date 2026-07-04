@@ -22,11 +22,19 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -webkit-touch-callout: none;
+  /* Guarda anti scroll horizontal (clip no rompe position:sticky, a diferencia
+     de overflow:hidden). Evita desbordes puntuales de carruseles/tiras. */
+  overflow-x: clip;
   /* Mejor legibilidad en mobile */
   font-size: 16px;
   @media (max-width: 640px) {
     font-size: 15px;
   }
+}
+
+/* Ninguna imagen puede desbordar su contenedor */
+img {
+  max-width: 100%;
 }
 
 #root,
@@ -95,6 +103,21 @@ input:focus,
 select:focus,
 textarea:focus {
   outline: none;
+}
+
+/* Accesibilidad: foco visible SOLO en navegación por teclado (:focus-visible
+   no aparece con mouse/touch, así que no altera el aspecto habitual). Repara
+   la ausencia de indicador de foco en botones y enlaces. */
+a:focus-visible,
+button:focus-visible,
+[role='button']:focus-visible,
+[tabindex]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid rgba(244, 63, 94, 0.85);
+  outline-offset: 2px;
+  border-radius: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {

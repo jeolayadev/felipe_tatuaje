@@ -86,7 +86,9 @@ export const Navbar = ({ viewMode, onToggleView }: NavbarProps) => {
           type="button"
           className={`${styles.menuBtn} ${isOpen ? styles.open : ''}`}
           onClick={() => setIsOpen(!isOpen)}
-          aria-label="Menu"
+          aria-label={isOpen ? 'Cerrar menú' : 'Abrir menú'}
+          aria-expanded={isOpen}
+          aria-controls="mobile-nav-panel"
         >
           <span />
           <span />
@@ -96,6 +98,7 @@ export const Navbar = ({ viewMode, onToggleView }: NavbarProps) => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            id="mobile-nav-panel"
             className={styles.mobilePanel}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}

@@ -2,6 +2,9 @@
   position: relative;
   width: 100%;
   padding: 60px 0;
+  /* Recorta solo en horizontal: las tarjetas laterales del 3D ya no desbordan
+     en tablet, pero la tarjeta central sigue asomando en vertical. */
+  overflow-x: clip;
   background: linear-gradient(
     180deg,
     rgba(10, 10, 10, 0.5) 0%,
