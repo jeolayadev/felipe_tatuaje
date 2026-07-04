@@ -151,11 +151,15 @@
     letter-spacing: 0.06em;
     padding: 0.5rem 0.85rem;
     border-radius: 4px;
-    transition: color 0.2s, background 0.2s;
+    transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
 
     &:hover {
       color: #f4f4f5;
       background: #1a1a1a;
+    }
+
+    &:active {
+      transform: translateY(1px);
     }
   }
 

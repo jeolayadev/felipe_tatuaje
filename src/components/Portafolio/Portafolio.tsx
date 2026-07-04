@@ -167,7 +167,7 @@ export const Portafolio = () => {
                   onClick={() => handleCardClick(t)}
                   onKeyDown={(e) => { if (e.key === 'Enter') handleCardClick(t); }}
                 >
-                  <SafeImage src={t.src} alt={t.alt || t.titulo} />
+                  <SafeImage src={t.src} alt={t.alt || t.titulo} loading="lazy" />
                   <motion.div
                     className={styles.imgOverlay}
                     initial={{ opacity: 0 }}
@@ -189,6 +189,9 @@ export const Portafolio = () => {
           {selected && (
             <motion.div
               className={styles.lightbox}
+              role="dialog"
+              aria-modal="true"
+              aria-label={selected.titulo}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
