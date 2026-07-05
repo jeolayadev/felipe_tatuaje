@@ -36,6 +36,7 @@ function App() {
   const wallpaper = `${import.meta.env.BASE_URL}bg-wallpaper.jpg`
 
   return (
+    <>
     <div className="app">
       <div
         className="site-bg"
@@ -57,8 +58,9 @@ function App() {
         <ArtistLogin onSubmit={login} onBack={goToClient} />
       )}
       <Footer />
-      {viewMode === 'cliente' && <FloatingContact />}
     </div>
+    {viewMode === 'cliente' && <FloatingContact />}
+    </>
   )
 }
 

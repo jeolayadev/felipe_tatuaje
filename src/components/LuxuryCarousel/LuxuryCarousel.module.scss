@@ -41,7 +41,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 520px;
+  /* La pista debe ser >= alto de la tarjeta central (que está posicionada en
+     absoluto); si no, la tarjeta desborda y se solapa con los controles y la
+     sección siguiente. */
+  min-height: 660px;
   cursor: grab;
 
   &:active {
@@ -49,11 +52,11 @@
   }
 
   @media (max-width: 768px) {
-    min-height: 380px;
+    min-height: 520px;
   }
 
   @media (max-width: 480px) {
-    min-height: 320px;
+    min-height: 400px;
   }
 }
 
