@@ -13,13 +13,16 @@ import { getStorage, type FirebaseStorage } from 'firebase/storage';
  * Si no hay configuración, `isFirebaseConfigured` es false y la app sigue
  * funcionando con almacenamiento local (modo beta), sin romperse.
  */
+/* Config del proyecto Inkepilef. Los valores por defecto permiten que el sitio
+   desplegado funcione sin depender de Secrets; se pueden sobreescribir con
+   variables de entorno (VITE_FIREBASE_*) para dev local u otros entornos. */
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? 'AIzaSyAKVVduzDDtT1L6sxhMLXa4WvH2HuHQx5A',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ?? 'inkepilef.firebaseapp.com',
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID ?? 'inkepilef',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ?? 'inkepilef.firebasestorage.app',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID ?? '350310734161',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID ?? '1:350310734161:web:ee0aa95bfdbd4e4fba5b70',
 };
 
 export const isFirebaseConfigured = Boolean(

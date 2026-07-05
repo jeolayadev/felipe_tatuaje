@@ -1,0 +1,42 @@
+rules_version = '2';
+
+// Reglas de seguridad de Firestore para Inkepilef.
+// Cópialas en: Consola Firebase → Firestore Database → Reglas → Publicar.
+//
+// Modelo:
+//  - config/* (horario, pagos, y a futuro la galería): lectura PÚBLICA
+//    (la web necesita leer el horario para mostrar disponibilidad),
+//    escritura SOLO para el tatuador autenticado.
+//  - bookings/*: cualquier visitante puede CREAR una reserva (sin login),
+//    con validación básica; solo el tatuador puede leer, editar o borrar.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /config/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /bookings/{id} {
+      allow read, update, delete: if isAdmin();
+      allow create: if isValidBooking();
+    }
+
+    // Cualquier usuario autenticado = el tatuador (no hay registro público en
+    // la app). Para máxima seguridad, reemplaza por el UID real de tu cuenta:
+    //   return request.auth != null && request.auth.uid == 'TU_UID_AQUI';
+    function isAdmin() {
+      return request.auth != null;
+    }
+
+    function isValidBooking() {
+      let d = request.resource.data;
+      return d.keys().hasAll(['date', 'time', 'name', 'contact', 'idea', 'createdAt'])
+        && d.name is string && d.name.size() > 0 && d.name.size() < 120
+        && d.contact is string && d.contact.size() > 0 && d.contact.size() < 200
+        && d.date is string && d.time is string
+        && d.idea is string && d.idea.size() < 2000;
+    }
+  }
+}

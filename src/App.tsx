@@ -13,7 +13,7 @@ import './App.css'
 
 function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('cliente')
-  const { authed, login, logout } = useArtistAuth()
+  const { authed, ready, login, logout } = useArtistAuth()
 
   const toggleViewMode = () => {
     setViewMode((current) => (current === 'cliente' ? 'tatuador' : 'cliente'))
@@ -52,6 +52,8 @@ function App() {
           <Cuidados />
           <Contacto />
         </>
+      ) : !ready ? (
+        <div className="auth-loading" aria-live="polite">Cargando…</div>
       ) : authed ? (
         <Agenda viewMode={viewMode} onLogout={handleLogout} />
       ) : (

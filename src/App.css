@@ -49,6 +49,16 @@ img {
   overflow-x: clip;
 }
 
+.auth-loading {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #71717a;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+}
+
 /* Fondo único — sin duplicar capas ni mezclar con las fotos */
 .site-bg {
   position: fixed;

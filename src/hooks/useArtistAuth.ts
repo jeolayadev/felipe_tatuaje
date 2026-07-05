@@ -1,46 +1,40 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { isFirebaseConfigured } from '../firebase/config';
+import { adminSignIn, adminSignOut, watchAuth, authErrorMessage } from '../firebase/auth';
 
 /**
- * Autenticacion de demo para la vista tatuador (beta).
- * Guarda la sesion en sessionStorage (se cierra al cerrar la pestaña).
- *
- * NOTA: es un control de acceso de maqueta, no seguridad real. En el roadmap
- * se reemplaza por Firebase Authentication (correo/contraseña o Google) con
- * roles y reglas de seguridad en el backend.
+ * Sesión del tatuador con Firebase Authentication (correo/contraseña).
+ * `authed` = hay un usuario con sesión. `ready` = ya se resolvió el estado
+ * inicial de auth (evita parpadeos entre login y panel al recargar).
  */
-const STORAGE_KEY = 'inkepilef-artist-auth';
-export const ARTIST_PASSCODE = 'inke2026';
-
 export const useArtistAuth = () => {
-  const [authed, setAuthed] = useState<boolean>(() => {
-    try {
-      return sessionStorage.getItem(STORAGE_KEY) === '1';
-    } catch {
-      return false;
-    }
-  });
+  const [authed, setAuthed] = useState(false);
+  const [ready, setReady] = useState(!isFirebaseConfigured);
 
-  const login = useCallback((code: string) => {
-    if (code.trim() === ARTIST_PASSCODE) {
-      try {
-        sessionStorage.setItem(STORAGE_KEY, '1');
-      } catch {
-        /* almacenamiento no disponible: igual autorizamos en memoria */
-      }
-      setAuthed(true);
-      return true;
+  useEffect(() => {
+    if (!isFirebaseConfigured) return;
+    const unsub = watchAuth((user) => {
+      setAuthed(!!user);
+      setReady(true);
+    });
+    return unsub;
+  }, []);
+
+  /** Devuelve null si el inicio fue exitoso, o un mensaje de error. */
+  const login = useCallback(async (email: string, password: string): Promise<string | null> => {
+    if (!isFirebaseConfigured) return 'Firebase no está configurado todavía.';
+    try {
+      await adminSignIn(email, password);
+      return null;
+    } catch (err) {
+      const code = (err as { code?: string })?.code ?? '';
+      return authErrorMessage(code);
     }
-    return false;
   }, []);
 
   const logout = useCallback(() => {
-    try {
-      sessionStorage.removeItem(STORAGE_KEY);
-    } catch {
-      /* noop */
-    }
-    setAuthed(false);
+    void adminSignOut();
   }, []);
 
-  return { authed, login, logout };
+  return { authed, ready, login, logout };
 };

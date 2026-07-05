@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useMemo, useState, type FormEvent } from 'react';
 import { motion } from 'framer-motion';
 import { BRAND } from '../../utils/constants';
 import { BOOKING_POLICY } from '../../data/studio';
@@ -10,44 +10,16 @@ import { IconCalendar, IconClock, IconClients, IconNeedle } from '../ui/icons/Me
 import { GalleryManager } from './GalleryManager';
 import { PaymentSettings } from './PaymentSettings';
 import { useStudioConfig, formatCLP } from '../../hooks/useStudioConfig';
+import { useSchedule, useBookings } from '../../hooks/useAgendaData';
+import {
+  type WeekdayKey,
+  type DayConfig,
+  type Schedule,
+  type Booking,
+} from '../../data/agendaModel';
 import styles from './Agenda.module.scss';
 
 export type ViewMode = 'cliente' | 'tatuador';
-
-type WeekdayKey =
-  | 'monday'
-  | 'tuesday'
-  | 'wednesday'
-  | 'thursday'
-  | 'friday'
-  | 'saturday'
-  | 'sunday';
-
-type DayConfig = {
-  enabled: boolean;
-  start: string;
-  end: string;
-};
-
-type Schedule = {
-  slotMinutes: number;
-  days: Record<WeekdayKey, DayConfig>;
-  blockedDates: string[];
-};
-
-type Booking = {
-  id: string;
-  date: string;
-  time: string;
-  name: string;
-  contact: string;
-  email?: string;
-  phoneNumber?: string;
-  bloodType?: string;
-  idea: string;
-  notes?: string;
-  createdAt: string;
-};
 
 type SlotStatus = 'available' | 'booked' | 'past';
 
@@ -84,9 +56,6 @@ type AgendaProps = {
   onLogout?: () => void;
 };
 
-const SCHEDULE_STORAGE_KEY = 'inkepilef-schedule-v1';
-const BOOKINGS_STORAGE_KEY = 'inkepilef-bookings-v1';
-
 const WEEKDAYS: Array<{ key: WeekdayKey; label: string; short: string; jsDay: number }> = [
   { key: 'monday', label: 'Lunes', short: 'Lun', jsDay: 1 },
   { key: 'tuesday', label: 'Martes', short: 'Mar', jsDay: 2 },
@@ -97,20 +66,6 @@ const WEEKDAYS: Array<{ key: WeekdayKey; label: string; short: string; jsDay: nu
   { key: 'sunday', label: 'Domingo', short: 'Dom', jsDay: 0 },
 ];
 
-const DEFAULT_SCHEDULE: Schedule = {
-  slotMinutes: 90,
-  days: {
-    monday: { enabled: false, start: '14:00', end: '20:00' },
-    tuesday: { enabled: true, start: '14:00', end: '20:00' },
-    wednesday: { enabled: true, start: '14:00', end: '20:00' },
-    thursday: { enabled: true, start: '14:00', end: '20:00' },
-    friday: { enabled: true, start: '14:00', end: '20:00' },
-    saturday: { enabled: true, start: '12:00', end: '18:00' },
-    sunday: { enabled: false, start: '12:00', end: '18:00' },
-  },
-  blockedDates: [],
-};
-
 const BOOKING_INITIAL = {
   name: '',
   contact: '',
@@ -119,27 +74,6 @@ const BOOKING_INITIAL = {
   bloodType: '',
   idea: '',
   notes: '',
-};
-
-const readStoredValue = <T,>(key: string, fallback: T): T => {
-  if (typeof window === 'undefined') return fallback;
-
-  try {
-    const stored = window.localStorage.getItem(key);
-    return stored ? (JSON.parse(stored) as T) : fallback;
-  } catch {
-    return fallback;
-  }
-};
-
-const useStoredState = <T,>(key: string, fallback: T) => {
-  const [state, setState] = useState<T>(() => readStoredValue(key, fallback));
-
-  useEffect(() => {
-    window.localStorage.setItem(key, JSON.stringify(state));
-  }, [key, state]);
-
-  return [state, setState] as const;
 };
 
 const formatDateValue = (date: Date) => {
@@ -236,8 +170,8 @@ const ARTIST_ACTIONS: Array<{ panel: ArtistPanel; label: string; detail: string 
 ];
 
 export const Agenda = ({ viewMode, onLogout }: AgendaProps) => {
-  const [schedule, setSchedule] = useStoredState<Schedule>(SCHEDULE_STORAGE_KEY, DEFAULT_SCHEDULE);
-  const [bookings, setBookings] = useStoredState<Booking[]>(BOOKINGS_STORAGE_KEY, []);
+  const [schedule, setSchedule] = useSchedule();
+  const { bookings, addBooking, removeBooking } = useBookings();
   const dates = useMemo(() => getUpcomingDates(28), []);
 
   return viewMode === 'tatuador' ? (
@@ -245,7 +179,7 @@ export const Agenda = ({ viewMode, onLogout }: AgendaProps) => {
       schedule={schedule}
       setSchedule={setSchedule}
       bookings={bookings}
-      setBookings={setBookings}
+      removeBooking={removeBooking}
       dates={dates}
       onLogout={onLogout}
     />
@@ -253,7 +187,7 @@ export const Agenda = ({ viewMode, onLogout }: AgendaProps) => {
     <ClientAgenda
       schedule={schedule}
       bookings={bookings}
-      setBookings={setBookings}
+      addBooking={addBooking}
       dates={dates}
     />
   );
@@ -263,12 +197,12 @@ type ArtistAgendaProps = {
   schedule: Schedule;
   setSchedule: React.Dispatch<React.SetStateAction<Schedule>>;
   bookings: Booking[];
-  setBookings: React.Dispatch<React.SetStateAction<Booking[]>>;
+  removeBooking: (id: string) => void | Promise<void>;
   dates: string[];
   onLogout?: () => void;
 };
 
-const ArtistAgenda = ({ schedule, setSchedule, bookings, setBookings, dates, onLogout }: ArtistAgendaProps) => {
+const ArtistAgenda = ({ schedule, setSchedule, bookings, removeBooking, dates, onLogout }: ArtistAgendaProps) => {
   const [activePanel, setActivePanel] = useState<ArtistPanel>('gobernar');
   const [blockedDate, setBlockedDate] = useState('');
   const [saveMessage, setSaveMessage] = useState('');
@@ -423,10 +357,6 @@ const ArtistAgenda = ({ schedule, setSchedule, bookings, setBookings, dates, onL
       ...current,
       blockedDates: current.blockedDates.filter((item) => item !== dateValue),
     }));
-  };
-
-  const removeBooking = (bookingId: string) => {
-    setBookings((current) => current.filter((booking) => booking.id !== bookingId));
   };
 
   const saveSchedule = (event: FormEvent<HTMLFormElement>) => {
@@ -878,11 +808,11 @@ const ArtistAgenda = ({ schedule, setSchedule, bookings, setBookings, dates, onL
 type ClientAgendaProps = {
   schedule: Schedule;
   bookings: Booking[];
-  setBookings: React.Dispatch<React.SetStateAction<Booking[]>>;
+  addBooking: (booking: Omit<Booking, 'id'>) => Promise<boolean>;
   dates: string[];
 };
 
-const ClientAgenda = ({ schedule, bookings, setBookings, dates }: ClientAgendaProps) => {
+const ClientAgenda = ({ schedule, bookings, addBooking, dates }: ClientAgendaProps) => {
   const [selectedDate, setSelectedDate] = useState(dates[0]);
   const [selectedSlot, setSelectedSlot] = useState('');
   const [bookingForm, setBookingForm] = useState(BOOKING_INITIAL);
@@ -911,29 +841,33 @@ const ClientAgenda = ({ schedule, bookings, setBookings, dates }: ClientAgendaPr
     (slot) => slot.time === selectedSlot && slot.status === 'available'
   );
 
-  const submitBooking = (event: FormEvent<HTMLFormElement>) => {
+  const submitBooking = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!selectedSlotAvailable) return;
 
-    const nextBooking: Booking = {
-      id: window.crypto?.randomUUID?.() ?? `${Date.now()}-${selectedDate}-${selectedSlot}`,
+    const newBooking: Omit<Booking, 'id'> = {
       date: selectedDate,
       time: selectedSlot,
       name: bookingForm.name.trim(),
       contact: bookingForm.contact.trim(),
-      email: bookingForm.email?.trim(),
-      phoneNumber: bookingForm.phoneNumber?.trim(),
-      bloodType: bookingForm.bloodType?.trim(),
+      email: bookingForm.email?.trim() ?? '',
+      phoneNumber: bookingForm.phoneNumber?.trim() ?? '',
+      bloodType: bookingForm.bloodType?.trim() ?? '',
       idea: bookingForm.idea.trim(),
-      notes: bookingForm.notes?.trim(),
+      notes: bookingForm.notes?.trim() ?? '',
       createdAt: new Date().toISOString(),
     };
 
-    setBookings((current) => [...current, nextBooking]);
-    setSuccess(`Reserva tomada para ${getDateLabel(selectedDate)} a las ${selectedSlot}.`);
-    setBookingForm(BOOKING_INITIAL);
-    setSelectedSlot('');
-    window.setTimeout(() => setSuccess(''), 4200);
+    const ok = await addBooking(newBooking);
+    if (ok) {
+      setSuccess(`Reserva tomada para ${getDateLabel(selectedDate)} a las ${selectedSlot}.`);
+      setBookingForm(BOOKING_INITIAL);
+      setSelectedSlot('');
+      window.setTimeout(() => setSuccess(''), 4200);
+    } else {
+      setSuccess('No se pudo registrar la reserva. Intenta nuevamente.');
+      window.setTimeout(() => setSuccess(''), 4200);
+    }
   };
 
   return (

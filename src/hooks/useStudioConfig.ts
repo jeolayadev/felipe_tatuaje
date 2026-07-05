@@ -1,14 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { db, isFirebaseConfigured } from '../firebase/config';
 
 /**
- * Configuración del estudio administrable (beta): pasarela de pago.
- *
- * Mercado Pago no permite cobrar de forma segura 100% en el navegador (la clave
- * secreta del vendedor no puede exponerse en el frontend). La vía correcta para
- * un sitio estático es un "Link de pago" que el tatuador crea en su cuenta de
- * Mercado Pago para el monto del abono; aquí se guarda ese link y se muestra un
- * botón de pago. La automatización total (crear preferencias dinámicas y
- * confirmar el pago) llegará con el backend (Firebase Functions) del roadmap.
+ * Configuración del estudio: pasarela de pago (abono con Mercado Pago).
+ * En config/studio de Firestore cuando hay Firebase; localStorage como respaldo.
  */
 export type StudioConfig = {
   mpLink: string;
@@ -16,10 +12,9 @@ export type StudioConfig = {
 };
 
 const KEY = 'inkepilef-config-v1';
-const EVENT = 'inkepilef-config-change';
 const DEFAULT: StudioConfig = { mpLink: '', abonoAmount: 15000 };
 
-const read = (): StudioConfig => {
+const readLocal = (): StudioConfig => {
   if (typeof window === 'undefined') return DEFAULT;
   try {
     const raw = window.localStorage.getItem(KEY);
@@ -35,27 +30,37 @@ const read = (): StudioConfig => {
 };
 
 export const useStudioConfig = () => {
-  const [config, setConfig] = useState<StudioConfig>(read);
+  const [config, setConfig] = useState<StudioConfig>(readLocal);
+  const ref = useRef(config);
+  useEffect(() => {
+    ref.current = config;
+  }, [config]);
 
   useEffect(() => {
-    const sync = () => setConfig(read());
-    window.addEventListener(EVENT, sync);
-    window.addEventListener('storage', sync);
-    return () => {
-      window.removeEventListener(EVENT, sync);
-      window.removeEventListener('storage', sync);
-    };
+    if (!isFirebaseConfigured || !db) return;
+    const unsub = onSnapshot(
+      doc(db, 'config', 'studio'),
+      (snap) => {
+        if (snap.exists()) setConfig({ ...DEFAULT, ...(snap.data() as Partial<StudioConfig>) });
+      },
+      () => {}
+    );
+    return unsub;
   }, []);
 
   const save = useCallback((patch: Partial<StudioConfig>) => {
-    const next = { ...read(), ...patch };
-    try {
-      window.localStorage.setItem(KEY, JSON.stringify(next));
-    } catch {
-      /* noop */
-    }
+    const next = { ...ref.current, ...patch };
+    ref.current = next;
     setConfig(next);
-    window.dispatchEvent(new Event(EVENT));
+    if (isFirebaseConfigured && db) {
+      setDoc(doc(db, 'config', 'studio'), next).catch(() => {});
+    } else {
+      try {
+        window.localStorage.setItem(KEY, JSON.stringify(next));
+      } catch {
+        /* noop */
+      }
+    }
   }, []);
 
   return { ...config, save };
