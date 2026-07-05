@@ -22,9 +22,6 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -webkit-touch-callout: none;
-  /* Guarda anti scroll horizontal (clip no rompe position:sticky, a diferencia
-     de overflow:hidden). Evita desbordes puntuales de carruseles/tiras. */
-  overflow-x: clip;
   /* Mejor legibilidad en mobile */
   font-size: 16px;
   @media (max-width: 640px) {
@@ -42,6 +39,14 @@ img {
   width: 100%;
   min-height: 100dvh;
   position: relative;
+}
+
+/* Guarda anti scroll horizontal en el contenedor de contenido (no en body,
+   porque ahí rompía la posición de los botones flotantes fijos). clip no crea
+   bloque contenedor para position:fixed, así que el dock flotante no se ve
+   afectado. */
+.app {
+  overflow-x: clip;
 }
 
 /* Fondo único — sin duplicar capas ni mezclar con las fotos */
