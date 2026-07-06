@@ -7,12 +7,15 @@ import styles from './ArtistLogin.module.scss';
 
 type ArtistLoginProps = {
   onSubmit: (email: string, password: string) => Promise<string | null>;
+  onRegister: (email: string, password: string) => Promise<string | null>;
   onBack: () => void;
 };
 
-export const ArtistLogin = ({ onSubmit, onBack }: ArtistLoginProps) => {
+export const ArtistLogin = ({ onSubmit, onRegister, onBack }: ArtistLoginProps) => {
+  const [mode, setMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
   const [show, setShow] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -20,12 +23,18 @@ export const ArtistLogin = ({ onSubmit, onBack }: ArtistLoginProps) => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (busy) return;
+    if (mode === 'register' && password !== confirm) {
+      setError('Las contraseñas no coinciden.');
+      return;
+    }
     setBusy(true);
     setError('');
-    const result = await onSubmit(email, password);
+    const result =
+      mode === 'login' ? await onSubmit(email, password) : await onRegister(email, password);
     if (result) {
       setError(result);
       setPassword('');
+      setConfirm('');
     }
     setBusy(false);
   };
@@ -54,10 +63,35 @@ export const ArtistLogin = ({ onSubmit, onBack }: ArtistLoginProps) => {
           <em>{BRAND.logoA}</em>
           {BRAND.logoB}
         </h1>
-        <h2 className={styles.title}>Acceso tatuador</h2>
+        <h2 className={styles.title}>
+          {mode === 'login' ? 'Iniciar sesión' : 'Crear cuenta'}
+        </h2>
         <p className={styles.lead}>
-          Ingresa con tu correo y contraseña para gobernar la agenda, las reservas y los clientes.
+          {mode === 'login'
+            ? 'Ingresa con tu correo y contraseña. El panel del tatuador solo está disponible para la cuenta del estudio.'
+            : 'Crea tu cuenta con correo y contraseña.'}
         </p>
+
+        <div className={styles.modeTabs} role="tablist">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mode === 'login'}
+            className={mode === 'login' ? styles.modeActive : ''}
+            onClick={() => { setMode('login'); setError(''); }}
+          >
+            Iniciar sesión
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mode === 'register'}
+            className={mode === 'register' ? styles.modeActive : ''}
+            onClick={() => { setMode('register'); setError(''); }}
+          >
+            Crear cuenta
+          </button>
+        </div>
 
         <label className={styles.field}>
           Correo
@@ -101,12 +135,31 @@ export const ArtistLogin = ({ onSubmit, onBack }: ArtistLoginProps) => {
           </div>
         </label>
 
+        {mode === 'register' && (
+          <label className={styles.field}>
+            Repite la contraseña
+            <div className={styles.inputWrap}>
+              <input
+                type={show ? 'text' : 'password'}
+                value={confirm}
+                autoComplete="new-password"
+                placeholder="••••••••"
+                onChange={(event) => {
+                  setConfirm(event.target.value);
+                  if (error) setError('');
+                }}
+                required
+              />
+            </div>
+          </label>
+        )}
+
         <div className={styles.feedback} aria-live="polite">
           {error && <span className={styles.error}>{error}</span>}
         </div>
 
         <button type="submit" className={styles.submit} disabled={busy}>
-          {busy ? 'Ingresando…' : 'Entrar al panel'}
+          {busy ? 'Procesando…' : mode === 'login' ? 'Iniciar sesión' : 'Crear cuenta'}
         </button>
 
         <button type="button" className={styles.back} onClick={onBack}>
@@ -114,8 +167,8 @@ export const ArtistLogin = ({ onSubmit, onBack }: ArtistLoginProps) => {
         </button>
 
         <p className={styles.demo}>
-          El acceso lo administra el estudio con Firebase Authentication.
-          <small>¿Olvidaste tu contraseña? Se restablece desde la consola de Firebase.</small>
+          Cuentas protegidas con Firebase Authentication.
+          <small>El panel de administración solo es visible para la cuenta oficial del estudio.</small>
         </p>
       </motion.form>
     </section>

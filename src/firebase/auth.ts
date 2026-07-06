@@ -1,5 +1,6 @@
 import {
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
   type User,
@@ -14,6 +15,11 @@ import { auth } from './config';
 export const adminSignIn = (email: string, password: string) => {
   if (!auth) throw new Error('Firebase no está configurado.');
   return signInWithEmailAndPassword(auth, email.trim(), password);
+};
+
+export const registerAccount = (email: string, password: string) => {
+  if (!auth) throw new Error('Firebase no está configurado.');
+  return createUserWithEmailAndPassword(auth, email.trim(), password);
 };
 
 export const adminSignOut = () => {
@@ -38,6 +44,10 @@ export const authErrorMessage = (code: string): string => {
     case 'auth/wrong-password':
     case 'auth/invalid-credential':
       return 'Correo o contraseña incorrectos.';
+    case 'auth/email-already-in-use':
+      return 'Ese correo ya tiene una cuenta. Inicia sesión.';
+    case 'auth/weak-password':
+      return 'La contraseña debe tener al menos 6 caracteres.';
     case 'auth/too-many-requests':
       return 'Demasiados intentos. Espera unos minutos e intenta de nuevo.';
     case 'auth/network-request-failed':

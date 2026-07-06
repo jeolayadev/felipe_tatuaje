@@ -49,10 +49,11 @@ export const GalleryManager = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     setHeroBusy(true);
+    setMsg('Subiendo…');
     try {
       const src = await fileToDataUrl(file);
-      const ok = updateHero(id, { src });
-      setMsg(ok ? 'Foto del hero actualizada.' : 'No queda espacio en el navegador (beta).');
+      const ok = await updateHero(id, { src });
+      setMsg(ok ? 'Foto del hero actualizada.' : 'No se pudo guardar. Intenta de nuevo.');
     } catch {
       setMsg('No se pudo procesar la imagen.');
     } finally {
@@ -76,15 +77,18 @@ export const GalleryManager = () => {
     }
   };
 
-  const addHeroImg = () => {
+  const addHeroImg = async () => {
     if (!newHeroSrc) {
       setMsg('Primero sube una foto para el hero.');
       return;
     }
+    setHeroBusy(true);
+    setMsg('Subiendo…');
     const estilo = newHeroEstilo.trim() || 'Estilo';
-    const ok = addHero({ estilo, src: newHeroSrc, alt: estilo });
+    const ok = await addHero({ estilo, src: newHeroSrc, alt: estilo });
+    setHeroBusy(false);
     if (!ok) {
-      setMsg('No queda espacio en el navegador (beta).');
+      setMsg('No se pudo guardar la foto. Intenta de nuevo.');
       return;
     }
     setNewHeroSrc('');
@@ -92,12 +96,12 @@ export const GalleryManager = () => {
     setMsg('Estilo agregado al hero.');
   };
 
-  const saveHeroEdit = () => {
+  const saveHeroEdit = async () => {
     if (!heroEditId) return;
     const estilo = heroEstilo.trim() || 'Estilo';
-    updateHero(heroEditId, { estilo, alt: estilo });
+    const ok = await updateHero(heroEditId, { estilo, alt: estilo });
     setHeroEditId(null);
-    setMsg('Nombre del estilo actualizado.');
+    setMsg(ok ? 'Nombre del estilo actualizado.' : 'No se pudo guardar. Intenta de nuevo.');
   };
 
   const onFile = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -117,25 +121,28 @@ export const GalleryManager = () => {
     }
   };
 
-  const add = () => {
+  const add = async () => {
     if (!newSrc) {
       setMsg('Primero sube una foto.');
       return;
     }
-    const ok = addImage({
+    setBusy(true);
+    setMsg('Subiendo…');
+    const ok = await addImage({
       src: newSrc,
       titulo: newTitulo.trim() || 'Sin título',
       categoria: newCategoria.trim() || 'General',
       alt: newTitulo.trim() || 'Tatuaje del estudio',
     });
+    setBusy(false);
     if (!ok) {
-      setMsg('No queda espacio en el navegador para más fotos (límite de la beta). Elimina alguna o usa imágenes más livianas.');
+      setMsg('No se pudo guardar la foto. Verifica tu conexión / permisos e intenta de nuevo.');
       return;
     }
     setNewSrc('');
     setNewTitulo('');
     setNewCategoria('');
-    setMsg('Imagen agregada. Ya aparece en la vista cliente.');
+    setMsg('Imagen guardada en la nube. Ya aparece en la vista cliente.');
   };
 
   const startEdit = (id: string, titulo: string, categoria: string) => {
@@ -145,19 +152,19 @@ export const GalleryManager = () => {
     setMsg('');
   };
 
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (!editingId) return;
-    updateImage(editingId, {
+    const ok = await updateImage(editingId, {
       titulo: editTitulo.trim() || 'Sin título',
       categoria: editCategoria.trim() || 'General',
       alt: editTitulo.trim() || 'Tatuaje del estudio',
     });
     setEditingId(null);
-    setMsg('Cambios guardados.');
+    setMsg(ok ? 'Cambios guardados.' : 'No se pudo guardar. Intenta de nuevo.');
   };
 
-  const remove = (id: string) => {
-    const ok = removeImage(id);
+  const remove = async (id: string) => {
+    const ok = await removeImage(id);
     if (!ok) setMsg('Debe quedar al menos una imagen en la galería.');
   };
 
@@ -314,7 +321,7 @@ export const GalleryManager = () => {
                   ) : (
                     <>
                       <button type="button" onClick={() => { setHeroEditId(h.id); setHeroEstilo(h.estilo); setMsg(''); }}>Renombrar</button>
-                      <button type="button" className={styles.del} onClick={() => { if (!removeHero(h.id)) setMsg('Debe quedar al menos un estilo en el hero.'); }}>Eliminar</button>
+                      <button type="button" className={styles.del} onClick={async () => { const ok = await removeHero(h.id); if (!ok) setMsg('Debe quedar al menos un estilo en el hero.'); }}>Eliminar</button>
                     </>
                   )}
                 </div>
@@ -339,7 +346,7 @@ export const GalleryManager = () => {
       </div>
 
       <p className={styles.note}>
-        Beta: las fotos se guardan en este navegador. Con la próxima etapa (Firebase) quedarán en la nube y visibles desde cualquier dispositivo.
+        Las fotos se guardan en la nube (Firebase) y se muestran a todos los visitantes desde cualquier dispositivo.
       </p>
     </section>
   );

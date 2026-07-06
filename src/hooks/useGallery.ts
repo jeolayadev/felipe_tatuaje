@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { db, isFirebaseConfigured } from '../firebase/config';
+import { uploadGalleryImage, deleteGalleryImage } from '../firebase/images';
 import { PORTFOLIO_WORKS, HERO_IMAGES } from '../data/images';
 
 /**
- * Galería administrable por el tatuador (beta).
- * Guarda en localStorage la lista de imágenes del portafolio y los ajustes del
- * carrusel (cantidad visible y velocidad). El tatuador la edita desde su panel
- * y el cambio se refleja en la vista cliente. En etapas futuras esto vivirá en
- * Firebase (Firestore + Storage) para compartirse entre dispositivos.
+ * Galería administrable por el tatuador.
+ * Con Firebase: metadatos en Firestore (doc config/gallery) y archivos en
+ * Storage (gallery/<id>.jpg) -> visibles desde cualquier dispositivo.
+ * Sin Firebase: fallback a localStorage (modo beta).
  */
 export type GalleryImage = {
   id: string;
@@ -54,21 +56,23 @@ const DEFAULT_STATE: GalleryState = {
 const clampCount = (n: number, max: number) =>
   Math.max(1, Math.min(Math.round(n), Math.max(1, max)));
 
-const readState = (): GalleryState => {
+const normalize = (parsed: Partial<GalleryState> | null | undefined): GalleryState => {
+  if (!parsed || !Array.isArray(parsed.images) || parsed.images.length === 0) {
+    return DEFAULT_STATE;
+  }
+  return {
+    images: parsed.images,
+    hero: Array.isArray(parsed.hero) && parsed.hero.length ? parsed.hero : DEFAULT_STATE.hero,
+    carouselCount: clampCount(parsed.carouselCount ?? 6, parsed.images.length),
+    autoplayMs: Math.max(1500, Math.min(parsed.autoplayMs ?? 5000, 12000)),
+  };
+};
+
+const readLocal = (): GalleryState => {
   if (typeof window === 'undefined') return DEFAULT_STATE;
   try {
     const raw = window.localStorage.getItem(KEY);
-    if (!raw) return DEFAULT_STATE;
-    const parsed = JSON.parse(raw) as Partial<GalleryState>;
-    if (!parsed || !Array.isArray(parsed.images) || parsed.images.length === 0) {
-      return DEFAULT_STATE;
-    }
-    return {
-      images: parsed.images,
-      hero: Array.isArray(parsed.hero) && parsed.hero.length ? parsed.hero : DEFAULT_STATE.hero,
-      carouselCount: clampCount(parsed.carouselCount ?? 6, parsed.images.length),
-      autoplayMs: Math.max(1500, Math.min(parsed.autoplayMs ?? 5000, 12000)),
-    };
+    return normalize(raw ? (JSON.parse(raw) as Partial<GalleryState>) : null);
   } catch {
     return DEFAULT_STATE;
   }
@@ -77,8 +81,11 @@ const readState = (): GalleryState => {
 const uid = () =>
   `img-${Date.now().toString(36)}-${Math.floor(performance.now() % 1000)}`;
 
+/** Data URLs no deben viajar a Firestore (límite 1MB/doc): se suben a Storage. */
+const isDataUrl = (src: string) => src.startsWith('data:');
+
 export const useGallery = () => {
-  const [state, setState] = useState<GalleryState>(readState);
+  const [state, setState] = useState<GalleryState>(readLocal);
   const stateRef = useRef(state);
 
   useEffect(() => {
@@ -86,7 +93,17 @@ export const useGallery = () => {
   }, [state]);
 
   useEffect(() => {
-    const sync = () => setState(readState());
+    if (isFirebaseConfigured && db) {
+      const unsub = onSnapshot(
+        doc(db, 'config', 'gallery'),
+        (snap) => {
+          if (snap.exists()) setState(normalize(snap.data() as Partial<GalleryState>));
+        },
+        () => {}
+      );
+      return unsub;
+    }
+    const sync = () => setState(readLocal());
     window.addEventListener(EVENT, sync);
     window.addEventListener('storage', sync);
     return () => {
@@ -95,64 +112,92 @@ export const useGallery = () => {
     };
   }, []);
 
-  /** Persiste y notifica. Devuelve true si se guardó (false si excede la cuota). */
-  const commit = useCallback((next: GalleryState): boolean => {
+  /** Persiste el estado. Devuelve false si no se pudo guardar. */
+  const commit = useCallback(async (next: GalleryState): Promise<boolean> => {
+    setState(next);
+    if (isFirebaseConfigured && db) {
+      try {
+        await setDoc(doc(db, 'config', 'gallery'), next);
+        return true;
+      } catch {
+        return false;
+      }
+    }
     let ok = true;
     try {
       window.localStorage.setItem(KEY, JSON.stringify(next));
     } catch {
       ok = false;
     }
-    setState(next);
     window.dispatchEvent(new Event(EVENT));
     return ok;
   }, []);
 
+  /** Sube la foto a Storage si es un data URL (con Firebase). */
+  const resolveSrc = useCallback(async (src: string, id: string): Promise<string> => {
+    if (isFirebaseConfigured && isDataUrl(src)) {
+      return uploadGalleryImage(src, id);
+    }
+    return src;
+  }, []);
+
   const addImage = useCallback(
-    (img: Omit<GalleryImage, 'id'>): boolean => {
-      const prev = stateRef.current;
-      const next: GalleryState = {
-        ...prev,
-        images: [...prev.images, { ...img, id: uid() }],
-      };
-      return commit(next);
+    async (img: Omit<GalleryImage, 'id'>): Promise<boolean> => {
+      const id = uid();
+      try {
+        const src = await resolveSrc(img.src, id);
+        return commit({
+          ...stateRef.current,
+          images: [...stateRef.current.images, { ...img, src, id }],
+        });
+      } catch {
+        return false;
+      }
     },
-    [commit]
+    [commit, resolveSrc]
   );
 
   const updateImage = useCallback(
-    (id: string, patch: Partial<Omit<GalleryImage, 'id'>>): boolean => {
-      const prev = stateRef.current;
-      const next: GalleryState = {
-        ...prev,
-        images: prev.images.map((it) => (it.id === id ? { ...it, ...patch } : it)),
-      };
-      return commit(next);
+    async (id: string, patch: Partial<Omit<GalleryImage, 'id'>>): Promise<boolean> => {
+      try {
+        const src = patch.src ? await resolveSrc(patch.src, id) : undefined;
+        const prev = stateRef.current;
+        return commit({
+          ...prev,
+          images: prev.images.map((it) =>
+            it.id === id ? { ...it, ...patch, ...(src ? { src } : {}) } : it
+          ),
+        });
+      } catch {
+        return false;
+      }
     },
-    [commit]
+    [commit, resolveSrc]
   );
 
   const removeImage = useCallback(
-    (id: string): boolean => {
+    async (id: string): Promise<boolean> => {
       const prev = stateRef.current;
+      const target = prev.images.find((it) => it.id === id);
       const images = prev.images.filter((it) => it.id !== id);
-      if (images.length === 0) return false; // no permitir dejar la galería vacía
-      const next: GalleryState = {
+      if (images.length === 0) return false; // no dejar la galería vacía
+      const ok = await commit({
         ...prev,
         images,
         carouselCount: clampCount(prev.carouselCount, images.length),
-      };
-      return commit(next);
+      });
+      if (ok && target) void deleteGalleryImage(target.src);
+      return ok;
     },
     [commit]
   );
 
   const moveImage = useCallback(
-    (id: string, dir: -1 | 1): boolean => {
+    (id: string, dir: -1 | 1): Promise<boolean> => {
       const prev = stateRef.current;
       const idx = prev.images.findIndex((it) => it.id === id);
       const target = idx + dir;
-      if (idx < 0 || target < 0 || target >= prev.images.length) return false;
+      if (idx < 0 || target < 0 || target >= prev.images.length) return Promise.resolve(false);
       const images = [...prev.images];
       [images[idx], images[target]] = [images[target], images[idx]];
       return commit({ ...prev, images });
@@ -161,7 +206,7 @@ export const useGallery = () => {
   );
 
   const setCarouselCount = useCallback(
-    (n: number): boolean => {
+    (n: number): Promise<boolean> => {
       const prev = stateRef.current;
       return commit({ ...prev, carouselCount: clampCount(n, prev.images.length) });
     },
@@ -169,7 +214,7 @@ export const useGallery = () => {
   );
 
   const setAutoplayMs = useCallback(
-    (ms: number): boolean => {
+    (ms: number): Promise<boolean> => {
       const prev = stateRef.current;
       return commit({ ...prev, autoplayMs: Math.max(1500, Math.min(ms, 12000)) });
     },
@@ -178,40 +223,58 @@ export const useGallery = () => {
 
   /* ---- Imágenes del Hero (una por estilo) ---- */
   const addHero = useCallback(
-    (h: Omit<HeroImage, 'id'>): boolean => {
-      const prev = stateRef.current;
-      return commit({ ...prev, hero: [...prev.hero, { ...h, id: uid() }] });
+    async (h: Omit<HeroImage, 'id'>): Promise<boolean> => {
+      const id = uid();
+      try {
+        const src = await resolveSrc(h.src, id);
+        return commit({
+          ...stateRef.current,
+          hero: [...stateRef.current.hero, { ...h, src, id }],
+        });
+      } catch {
+        return false;
+      }
     },
-    [commit]
+    [commit, resolveSrc]
   );
 
   const updateHero = useCallback(
-    (id: string, patch: Partial<Omit<HeroImage, 'id'>>): boolean => {
-      const prev = stateRef.current;
-      return commit({
-        ...prev,
-        hero: prev.hero.map((it) => (it.id === id ? { ...it, ...patch } : it)),
-      });
+    async (id: string, patch: Partial<Omit<HeroImage, 'id'>>): Promise<boolean> => {
+      try {
+        const src = patch.src ? await resolveSrc(patch.src, `${id}-${Date.now().toString(36)}`) : undefined;
+        const prev = stateRef.current;
+        return commit({
+          ...prev,
+          hero: prev.hero.map((it) =>
+            it.id === id ? { ...it, ...patch, ...(src ? { src } : {}) } : it
+          ),
+        });
+      } catch {
+        return false;
+      }
     },
-    [commit]
+    [commit, resolveSrc]
   );
 
   const removeHero = useCallback(
-    (id: string): boolean => {
+    async (id: string): Promise<boolean> => {
       const prev = stateRef.current;
+      const target = prev.hero.find((it) => it.id === id);
       const hero = prev.hero.filter((it) => it.id !== id);
       if (hero.length === 0) return false;
-      return commit({ ...prev, hero });
+      const ok = await commit({ ...prev, hero });
+      if (ok && target) void deleteGalleryImage(target.src);
+      return ok;
     },
     [commit]
   );
 
   const moveHero = useCallback(
-    (id: string, dir: -1 | 1): boolean => {
+    (id: string, dir: -1 | 1): Promise<boolean> => {
       const prev = stateRef.current;
       const idx = prev.hero.findIndex((it) => it.id === id);
       const target = idx + dir;
-      if (idx < 0 || target < 0 || target >= prev.hero.length) return false;
+      if (idx < 0 || target < 0 || target >= prev.hero.length) return Promise.resolve(false);
       const hero = [...prev.hero];
       [hero[idx], hero[target]] = [hero[target], hero[idx]];
       return commit({ ...prev, hero });
@@ -219,7 +282,7 @@ export const useGallery = () => {
     [commit]
   );
 
-  const resetGallery = useCallback((): boolean => commit(DEFAULT_STATE), [commit]);
+  const resetGallery = useCallback((): Promise<boolean> => commit(DEFAULT_STATE), [commit]);
 
   return {
     ...state,

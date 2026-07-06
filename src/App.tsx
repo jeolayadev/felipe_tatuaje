@@ -13,7 +13,7 @@ import './App.css'
 
 function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('cliente')
-  const { authed, ready, login, logout } = useArtistAuth()
+  const { authed, isAdmin, email, ready, login, register, logout } = useArtistAuth()
 
   const toggleViewMode = () => {
     setViewMode((current) => (current === 'cliente' ? 'tatuador' : 'cliente'))
@@ -54,10 +54,22 @@ function App() {
         </>
       ) : !ready ? (
         <div className="auth-loading" aria-live="polite">Cargando…</div>
-      ) : authed ? (
+      ) : authed && isAdmin ? (
         <Agenda viewMode={viewMode} onLogout={handleLogout} />
+      ) : authed ? (
+        <div className="auth-loading auth-noaccess" aria-live="polite">
+          <p>
+            Sesión iniciada como <strong>{email}</strong>.
+            <br />
+            Esta cuenta no tiene acceso al panel del tatuador.
+          </p>
+          <div>
+            <button type="button" onClick={goToClient}>Volver al sitio</button>
+            <button type="button" onClick={handleLogout}>Cerrar sesión</button>
+          </div>
+        </div>
       ) : (
-        <ArtistLogin onSubmit={login} onBack={goToClient} />
+        <ArtistLogin onSubmit={login} onRegister={register} onBack={goToClient} />
       )}
       <Footer />
     </div>

@@ -11,9 +11,12 @@ export const BRAND = {
   instagram: '@inkepilef',
   instagramUrl: 'https://instagram.com/inkepilef',
   artist: 'Felipe Ignacio Reyes V.',
-  location: 'General Las Heras #2323, Maipú, Santiago',
+  location: 'General Las Heras #2323, Providencia, Santiago',
   hours: 'Horario variable · solo con cita privada',
 };
+
+/** Único correo con acceso al panel del tatuador (vista admin). */
+export const ADMIN_EMAIL = BRAND.email;
 
 export const COLORS = {
   bg: '#0c0c0c',
