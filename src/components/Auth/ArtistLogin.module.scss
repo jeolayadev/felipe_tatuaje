@@ -87,6 +87,39 @@
   margin: 0.2rem 0 0.9rem;
 }
 
+.modeTabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+  padding: 0.3rem;
+  background: #141414;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+
+  button {
+    background: transparent;
+    border: none;
+    color: #a1a1aa;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.55rem 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+
+    &:hover {
+      color: #f4f4f5;
+    }
+  }
+
+  .modeActive {
+    background: rgba(225, 29, 72, 0.16);
+    color: #fff;
+    border: 1px solid rgba(225, 29, 72, 0.5);
+  }
+}
+
 .field {
   display: flex;
   flex-direction: column;

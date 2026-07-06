@@ -83,7 +83,7 @@ export const Contacto = () => {
             <div className={styles.mapEmbed}>
               <iframe
                 title="Ubicación de Inkepilef Tattoo Studio"
-                src="https://maps.google.com/maps?q=General%20Las%20Heras%202323%2C%20Maip%C3%BA%2C%20Santiago%2C%20Chile&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                src="https://maps.google.com/maps?q=General%20Las%20Heras%202323%2C%20Providencia%2C%20Santiago%2C%20Chile&t=&z=15&ie=UTF8&iwloc=&output=embed"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 allowFullScreen

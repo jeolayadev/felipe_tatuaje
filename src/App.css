@@ -49,6 +49,51 @@ img {
   overflow-x: clip;
 }
 
+.auth-loading {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #71717a;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+}
+
+.auth-noaccess {
+  flex-direction: column;
+  gap: 1.25rem;
+  text-align: center;
+  color: #d4d4d8;
+  padding: 1rem;
+
+  strong {
+    color: #f4f4f5;
+  }
+
+  div {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  button {
+    background: #18181b;
+    border: 1px solid #3f3f46;
+    color: #f4f4f5;
+    border-radius: 6px;
+    padding: 0.65rem 1.25rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  button:hover {
+    border-color: #e11d48;
+    background: rgba(225, 29, 72, 0.12);
+  }
+}
+
 /* Fondo único — sin duplicar capas ni mezclar con las fotos */
 .site-bg {
   position: fixed;

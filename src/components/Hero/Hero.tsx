@@ -58,7 +58,7 @@ export const Hero = () => {
           transition={{ duration: 0.6, ease: EASE }}
         >
           <RevealLine className={styles.eyebrow} delay={0.1}>
-            Tattoo Studio · Maipú, Santiago
+            Tattoo Studio · Providencia, Santiago
           </RevealLine>
 
           <h1 className={styles.title}>
